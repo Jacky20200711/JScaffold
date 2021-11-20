@@ -8,8 +8,8 @@ namespace JScaffold
     {
         public static void GenerateCode()
         {
-            Console.WriteLine("請輸入各項參數(專案,類別,DB實體,DB實體中的表名)");
-            Console.WriteLine("輸入範例: CSKDAdmin, UserPermission, CSKDContext, UserPermissions");
+            Console.WriteLine("輸入參數: 專案名稱, 類別名稱, context名稱, 該類別在 context 所屬的 table 名稱");
+            Console.WriteLine("輸入範例: NekoFood, UserAccount, NekoFoodContext, UserAccounts");
             Console.Write(": ");
             string input = Console.ReadLine();
             string[] names = input.Split(',');
