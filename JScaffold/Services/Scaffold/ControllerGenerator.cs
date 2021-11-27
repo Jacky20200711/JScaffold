@@ -38,9 +38,9 @@ namespace {projectName}.Controllers
                 var data = await _context.{tableName}.ToListAsync();
                 return View(data);
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
-                _logger.LogError($""取得 {controllerName} 失敗"");
+                _logger.LogError($""取得 {controllerName} 失敗 -> {{ex}}"");
                 return View(""~/Views/Shared/ErrorPage.cshtml"");
             }}
         }}
@@ -72,9 +72,9 @@ namespace {projectName}.Controllers
                 TempData[""message""] = ""新增成功"";
                 return RedirectToAction(""Index"");
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
-                _logger.LogError($""新增 {controllerName} 失敗"");
+                _logger.LogError($""新增 {controllerName} 失敗 -> {{ex}}"");
                 return View(""~/Views/Shared/ErrorPage.cshtml"");
             }}
         }}
@@ -84,7 +84,6 @@ namespace {projectName}.Controllers
         {{
             try
             {{
-
                 #region 檢查此筆資料是否存在
 
                 if (id == null)
@@ -107,9 +106,9 @@ namespace {projectName}.Controllers
 
                 return ""刪除成功"";
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
-                _logger.LogError($""刪除 {controllerName} 失敗"");
+                _logger.LogError($""刪除 {controllerName} 失敗 -> {{ex}}"");
                 return ""刪除失敗，系統忙碌中"";
             }}
         }}
@@ -142,9 +141,9 @@ namespace {projectName}.Controllers
             try
             {{
                 // 提取前端傳來的參數
+                int id = Convert.ToInt32(PostData[""id""].ToString());
                 string field1 = PostData[""field1""].ToString().Trim();
                 string field2 = PostData[""field2""].ToString().Trim();
-                int id = Convert.ToInt32(PostData[""id""].ToString());
 
                 // 撈取目標資料
                 var data = await _context.{tableName}.FindAsync(id);
@@ -162,9 +161,9 @@ namespace {projectName}.Controllers
                 TempData[""message""] = ""修改成功"";
                 return RedirectToAction(""Index"");
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
-                _logger.LogError($""修改 {controllerName} 失敗"");
+                _logger.LogError($""修改 {controllerName} 失敗 -> {{ex}}"");
                 return View(""~/Views/Shared/ErrorPage.cshtml"");
             }}
         }}
