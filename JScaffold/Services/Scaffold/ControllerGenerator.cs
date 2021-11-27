@@ -56,11 +56,11 @@ namespace {projectName}.Controllers
         {{
             try
             {{
-                // 取出參數內容
+                // 提取前端傳來的參數
                 string field1 = PostData[""field1""].ToString().Trim();
                 string field2 = PostData[""field2""].ToString().Trim();
                 
-                // 新增資料
+                // 創建一筆資料
                 {controllerName} newData = new()
                 {{
                 }};
@@ -141,12 +141,12 @@ namespace {projectName}.Controllers
         {{
             try
             {{
-                // 取出參數內容
+                // 提取前端傳來的參數
                 string field1 = PostData[""field1""].ToString().Trim();
                 string field2 = PostData[""field2""].ToString().Trim();
                 int id = Convert.ToInt32(PostData[""id""].ToString());
 
-                // 取出目標資料
+                // 撈取目標資料
                 var data = await _context.{tableName}.FindAsync(id);
                 if (data == null)
                 {{
@@ -154,7 +154,7 @@ namespace {projectName}.Controllers
                     return RedirectToAction(""Index"");
                 }}
 
-                // 修改目標資料 & 更新DB
+                // 修改目標資料並更新DB
                 //data.Field1 = field1;
                 //data.Field2 = field2;
                 await _context.SaveChangesAsync();
