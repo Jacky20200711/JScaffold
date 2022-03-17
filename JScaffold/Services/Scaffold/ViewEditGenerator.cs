@@ -1,9 +1,27 @@
-﻿namespace JScaffold.Services.Scaffold
+﻿using System.Collections.Generic;
+
+namespace JScaffold.Services.Scaffold
 {
     public class ViewEditGenerator
     {
-        public string GenerateCode(string controllerName)
+        public string GenerateCode(string controllerName, Dictionary<string, string> variables)
         {
+            List<string> paras = new List<string>();
+
+            #region 設定欄位內容
+            foreach (var item in variables)
+            {
+                if (item.Key.ToLower() == "id") continue;
+
+                paras.Add($"                                        <div class=\"form-group\">");
+                paras.Add($"                                            <label>{item.Key}</label>");
+                paras.Add($"                                            <input class=\"form-control\" name=\"{item.Key}\" maxlength=\"100\" value=\"@Model.{item.Key}\">");
+                paras.Add($"                                        </div>");
+
+            }
+            string paraInput = string.Join("\n", paras);
+            #endregion
+
             return $@"@model {controllerName}
 
 <script>
@@ -40,17 +58,15 @@
                                 @if(Model != null)
                                 {{
                                     <form role=""form"" asp-controller=""{controllerName}"" asp-action=""Edit"">
+{paraInput}
                                         <div class=""form-group"">
-                                            <label>分類</label>
-                                            <select class=""form-control"" name=""field1"">
-                                                @*<option>@Model.Field1</option>*@
+                                            <label>選擇器模板，若不需要則自行移除</label>
+                                            <select class=""form-control"" name=""fieldName"">
+                                                <option>A</option>
+                                                <option>B</option>
                                             </select>
                                         </div>
-                                        <div class=""form-group"">
-                                            <label>標題</label>
-                                            <input class=""form-control"" name=""field2"" maxlength=""50"" @*value=""@Model.Field2""*@ required>
-                                        </div>
-                                        <input type=""hidden"" name=""id"" value=@Model.Id />
+                                        <input type=""hidden"" name=""Id"" value=@Model.Id />
                                         <button type=""submit"" class=""btn btn-primary"">送出</button>
                                         <button type=""reset"" class=""btn btn-success"">重設</button>
                                         <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
@@ -67,8 +83,7 @@
             </div>
         </div>
     </div>
-</div>
-";
+</div>";
         }
     }
 }

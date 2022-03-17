@@ -1,10 +1,50 @@
-﻿namespace JScaffold.Services.Scaffold
+﻿using System.Collections.Generic;
+
+namespace JScaffold.Services.Scaffold
 {
     public class ViewIndexGenerator
     {
-        public string GenerateCode(string controllerName)
+        public string GenerateCode(string controllerName, Dictionary<string, string> variables)
         {
+            List<string> paras = new List<string>();
+
+            #region 設定標題列
+            foreach (var item in variables)
+            {
+                if (item.Key.ToLower() == "id") continue;
+
+                paras.Add($"                                        <th style=\"white-space: nowrap;\">{item.Key}</th>");
+            }
+            paras.Add($"                                        <th style=\"white-space: nowrap;\">操作選項</th>");
+            string paraTitle = string.Join("\n", paras);
+            #endregion
+
+            #region 設定欄位內容
+            paras.Clear();
+            foreach (var item in variables)
+            {
+                if (item.Key.ToLower() == "id") continue;
+
+                paras.Add($"                                                    <td style=\"white-space: nowrap;\">@data.{item.Key}</td>");
+            }
+            string paraContent = string.Join("\n", paras);
+            #endregion
+
             return $@"@model List<{controllerName}>
+
+<script>
+    // 這個函數用來將 Entity Code 轉回中文
+    function decodeEntities(encodedString) {{
+        var textArea = document.createElement('textarea');
+        textArea.innerHTML = encodedString;
+        return textArea.value;
+    }}
+    var serverMessage = decodeEntities('@TempData[""message""]');
+    if (serverMessage.length > 0)
+    {{
+        alert(serverMessage);
+    }}
+</script>
 
 <script>
     function DeleteData(idOfData) {{
@@ -25,29 +65,13 @@
     }}
 </script>
 
-<script>
-    // 這個函數用來將 Entity Code 轉回中文
-    function decodeEntities(encodedString) {{
-        var textArea = document.createElement('textarea');
-        textArea.innerHTML = encodedString;
-        return textArea.value;
-    }}
-    var serverMessage = decodeEntities('@TempData[""message""]');
-    if (serverMessage.length > 0)
-    {{
-        alert(serverMessage);
-    }}
-</script>
-
 <div id = ""page-wrapper"" >
      <div class=""container-fluid"">
         <div class=""row"">
             <div class=""col-lg-12"">
                 <h1 class=""page-header"">資料列表</h1>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
         <div class=""row"">
             <div class=""col-lg-12"">
                 <div class=""panel panel-default"">
@@ -60,14 +84,7 @@
                             <table class=""table table-striped table-bordered table-hover"" id=""dataTables-example"">
                                 <thead>
                                     <tr>
-                                        <th style=""display:none;"">排版用(不顯示)</th>
-                                        <th style=""white-space: nowrap;"">分類</th>
-                                        <th style=""white-space: nowrap;"">標題</th>
-                                        <th style=""white-space: nowrap;"">說明</th>
-                                        <th style=""white-space: nowrap;"">檔案位置</th>
-                                        <th style=""white-space: nowrap;"">修改人員</th>
-                                        <th style=""white-space: nowrap;"">修改日期</th>
-                                        <th style=""white-space: nowrap;"">操作選項</th>
+{paraTitle}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -80,10 +97,7 @@
                                                 sequence++;
                                                 <tr class=""gradeA"">
                                                     <td style=""display:none;"">@sequence</td>
-                                                    @*
-                                                    <td style=""white-space: nowrap;"">@data.MenuName</td>
-                                                    <td style=""white-space: nowrap;"">@Convert.ToDateTime(data.ModifyDate).ToString(""yyyy-MM-dd HH:mm"")</td>
-                                                    *@
+{paraContent}   
                                                     <td style=""white-space: nowrap;"">
                                                         <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ id = data.Id }})'"">修改</button>
                                                         <button class=""btn btn-danger"" onclick=""DeleteData(@data.Id)"">刪除</button>

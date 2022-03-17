@@ -1,17 +1,83 @@
-﻿namespace JScaffold.Services.Scaffold
+﻿using System;
+using System.Collections.Generic;
+
+namespace JScaffold.Services.Scaffold
 {
     public class ControllerGenerator
     {
-        public string GenerateCode(string projectName, string controllerName, string contextName, string tableName)
+        public string GenerateCode(string projectName, string controllerName, string contextName, string tableName, Dictionary<string, string> variables)
         {
+            List<string> paras = new List<string>();
+
+            #region 取得提取參數的細節
+            foreach (var item in variables)
+            {
+                // 排除 Primary key
+                if (item.Key.ToLower() == "id")
+                {
+                    continue;
+                }
+
+                if (item.Value == "int" || item.Value == "int?")
+                {
+                    paras.Add($"                {item.Value} {item.Key} = int.TryParse(PostData[\"{item.Key}\"].ToString(), out int val) ? val : 0;");
+                }
+                else if (item.Value == "float" || item.Value == "float?")
+                {
+                    paras.Add($"                {item.Value} {item.Key} = float.Parse(PostData[\"{item.Key}\"].ToString());");
+                }
+                else if (item.Value == "double" || item.Value == "double?")
+                {
+                    paras.Add($"                {item.Value} {item.Key} = double.Parse(PostData[\"{item.Key}\"].ToString());");
+                }
+                else if (item.Value == "DateTime" || item.Value == "DateTime?")
+                {
+                    paras.Add($"                {item.Value} {item.Key} = DateTime.Now;");
+                }
+                else
+                {
+                    paras.Add($"                {item.Value} {item.Key} = PostData[\"{item.Key}\"].ToString();");
+                }
+            }
+            string paraFetch = string.Join("\n", paras);
+            #endregion
+
+            #region 取得新增資料的細節
+            paras.Clear();
+            foreach (var item in variables)
+            {
+                // 排除 Primary key
+                if (item.Key.ToLower() == "id")
+                {
+                    continue;
+                }
+
+                paras.Add($"                    {item.Key} = {item.Key},");
+            }
+            string paraAssign_create = string.Join("\n", paras);
+            #endregion
+
+            #region 取得修改資料的細節
+            paras.Clear();
+            foreach (var item in variables)
+            {
+                // 排除 Primary key
+                if (item.Key.ToLower() == "id")
+                {
+                    continue;
+                }
+
+                paras.Add($"                data.{item.Key} = {item.Key};");
+            }
+            string paraAssign_edit = string.Join("\n", paras);
+            #endregion
+
             return $@"using {projectName}.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace {projectName}.Controllers
@@ -20,15 +86,11 @@ namespace {projectName}.Controllers
     {{
         private readonly ILogger<{controllerName}Controller> _logger;
         private readonly {contextName} _context;
-        private readonly HttpContext? _httpContext;
 
-        public {controllerName}Controller({contextName} context,
-            ILogger<{controllerName}Controller> logger,
-            IHttpContextAccessor httpContextAccessor)
+        public {controllerName}Controller({contextName} context, ILogger<{controllerName}Controller> logger)
         {{
             _context = context;
             _logger = logger;
-            _httpContext = httpContextAccessor.HttpContext;
         }}
 
         public async Task<IActionResult> Index()
@@ -56,13 +118,13 @@ namespace {projectName}.Controllers
         {{
             try
             {{
-                // 提取前端傳來的參數
-                string field1 = PostData[""field1""].ToString().Trim();
-                string field2 = PostData[""field2""].ToString().Trim();
+                // 提取參數
+{paraFetch}
                 
-                // 創建一筆資料
-                {controllerName} newData = new()
+                // 創建資料
+                {controllerName} newData = new {controllerName}()
                 {{
+{paraAssign_create}
                 }};
                 
                 // 更新DB
@@ -88,14 +150,14 @@ namespace {projectName}.Controllers
 
                 if (id == null)
                 {{
-                    return ""刪除失敗，查無這筆資料!"";
+                    return ""資料不存在"";
                 }}
 
-                var data = _context.{tableName}.FirstOrDefault(u => u.Id == id);
+                var data = await _context.{tableName}.FindAsync(id);
 
                 if (data == null)
                 {{
-                    return ""刪除失敗，查無這筆資料!"";
+                    return ""資料不存在"";
                 }}
 
                 #endregion
@@ -115,7 +177,7 @@ namespace {projectName}.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {{
-            #region 檢查資料庫是否有這筆資料
+            #region 檢查此筆資料是否存在
 
             if (id == null)
             {{
@@ -140,22 +202,20 @@ namespace {projectName}.Controllers
         {{
             try
             {{
-                // 提取前端傳來的參數
-                int id = Convert.ToInt32(PostData[""id""].ToString());
-                string field1 = PostData[""field1""].ToString().Trim();
-                string field2 = PostData[""field2""].ToString().Trim();
+                // 提取參數
+                int Id = int.Parse(PostData[""Id""].ToString());
+{paraFetch}
 
-                // 撈取目標資料
-                var data = await _context.{tableName}.FindAsync(id);
+                // 撈取目標
+                var data = await _context.{tableName}.FindAsync(Id);
                 if (data == null)
                 {{
                     TempData[""message""] = ""修改失敗，此筆資料不存在"";
                     return RedirectToAction(""Index"");
                 }}
 
-                // 修改目標資料並更新DB
-                //data.Field1 = field1;
-                //data.Field2 = field2;
+                // 更新DB
+{paraAssign_edit}
                 await _context.SaveChangesAsync();
 
                 TempData[""message""] = ""修改成功"";
