@@ -17,23 +17,22 @@ namespace JScaffold
 
         static void Main()
         {
-            Console.WriteLine(@"輸入參數: 專案名稱, 類別名稱, context名稱, 在context的表名, 類別路徑");
-            Console.WriteLine(@"輸入範例: NekoFood, Bento, NekoFoodContext, Bentos, D:\Desktop\Project\NekoFood\NekoFood\Models\Bento.cs");
+            Console.WriteLine(@"輸入參數: 專案名稱, context名稱, 類別對應的表名, 類別路徑");
+            Console.WriteLine(@"輸入範例: NekoFood, NekoFoodContext, Bentos, D:\Desktop\Project\NekoFood\NekoFood\Models\Bento.cs");
             Console.Write("> ");
             string input = Console.ReadLine();
             string[] names = input.Split(',');
 
-            if (names.Length != 5)
+            if (names.Length != 4)
             {
-                Console.WriteLine("輸入錯誤，請檢查輸入的參數數量");
+                Console.WriteLine("輸入錯誤，請檢查輸入的參數");
                 return;
             }
 
             string projecName = names[0].Trim();
-            string controllerName = names[1].Trim();
-            string contextName = names[2].Trim();
-            string tableName = names[3].Trim();
-            string classPath = names[4].Trim();
+            string contextName = names[1].Trim();
+            string tableName = names[2].Trim();
+            string classPath = names[3].Replace('\\', '/').Trim();
 
             // 檢查類別路徑
             if (!File.Exists(classPath))
@@ -42,6 +41,9 @@ namespace JScaffold
                 return;
             }
 
+            // 通過路徑檢查後，取出類別名稱
+            string className = classPath.Split('/')[^1].Replace(".cs", "");
+
             Dictionary<string, string> variables = ClassParser.GetVariable(classPath);
 
             // 產生程式碼
@@ -49,14 +51,14 @@ namespace JScaffold
             ViewIndexGenerator viewIndexGenerator = new ViewIndexGenerator();
             ViewCreateGenerator viewCreateGenerator = new ViewCreateGenerator();
             ViewEditGenerator viewEditGenerator = new ViewEditGenerator();
-            string text1 = controllerGenerator.GenerateCode(projecName, controllerName, contextName, tableName, variables);
-            string text2 = viewIndexGenerator.GenerateCode(controllerName, variables);
-            string text3 = viewCreateGenerator.GenerateCode(controllerName, variables);
-            string text4 = viewEditGenerator.GenerateCode(controllerName, variables);
+            string text1 = controllerGenerator.GenerateCode(projecName, className, contextName, tableName, variables);
+            string text2 = viewIndexGenerator.GenerateCode(className, variables);
+            string text3 = viewCreateGenerator.GenerateCode(className, variables);
+            string text4 = viewEditGenerator.GenerateCode(className, variables);
 
             // 設定輸出目錄
             string outputDir1 = $"D:/Desktop";
-            string outputDir2 = $"{outputDir1}/{controllerName}";
+            string outputDir2 = $"{outputDir1}/{className}";
             if (!Directory.Exists(outputDir1))
             {
                 Directory.CreateDirectory(outputDir1);
@@ -67,7 +69,7 @@ namespace JScaffold
             }
 
             // 寫入輸出目錄
-            WriteToFile($"{outputDir1}/{controllerName}Controller.cs", text1);
+            WriteToFile($"{outputDir1}/{className}Controller.cs", text1);
             WriteToFile($"{outputDir2}/Index.cshtml", text2);
             WriteToFile($"{outputDir2}/Create.cshtml", text3);
             WriteToFile($"{outputDir2}/Edit.cshtml", text4);
