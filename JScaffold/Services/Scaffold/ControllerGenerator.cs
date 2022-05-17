@@ -36,7 +36,7 @@ namespace JScaffold.Services.Scaffold
                 }
                 else
                 {
-                    paras.Add($"                {item.Value} {item.Key} = PostData[\"{item.Key}\"].ToString();");
+                    paras.Add($"                {item.Value} {item.Key} = PostData[\"{item.Key}\"].ToString().Trim();");
                 }
             }
             string paraFetch = string.Join("\n", paras);
@@ -73,6 +73,8 @@ namespace JScaffold.Services.Scaffold
             #endregion
 
             return $@"using {projectName}.Models;
+using {projectName}.Models.Entities;
+using {projectName}.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -82,6 +84,7 @@ using System.Threading.Tasks;
 
 namespace {projectName}.Controllers
 {{
+    //[AuthorizeManager]
     public class {controllerName}Controller : Controller
     {{
         private readonly ILogger<{controllerName}Controller> _logger;
@@ -203,11 +206,11 @@ namespace {projectName}.Controllers
             try
             {{
                 // 提取參數
-                int Id = int.Parse(PostData[""Id""].ToString());
+                int id = int.Parse(PostData[""id""].ToString());
 {paraFetch}
 
                 // 撈取目標
-                var data = await _context.{tableName}.FindAsync(Id);
+                var data = await _context.{tableName}.FindAsync(id);
                 if (data == null)
                 {{
                     TempData[""message""] = ""修改失敗，此筆資料不存在"";

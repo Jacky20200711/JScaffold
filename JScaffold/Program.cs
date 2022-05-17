@@ -52,9 +52,9 @@ namespace JScaffold
             ViewCreateGenerator viewCreateGenerator = new ViewCreateGenerator();
             ViewEditGenerator viewEditGenerator = new ViewEditGenerator();
             string text1 = controllerGenerator.GenerateCode(projecName, className, contextName, tableName, variables);
-            string text2 = viewIndexGenerator.GenerateCode(className, variables);
+            string text2 = viewIndexGenerator.GenerateCode(className, variables, projecName);
             string text3 = viewCreateGenerator.GenerateCode(className, variables);
-            string text4 = viewEditGenerator.GenerateCode(className, variables);
+            string text4 = viewEditGenerator.GenerateCode(className, variables, projecName);
 
             // 設定輸出目錄
             string outputDir1 = $"D:/Desktop";

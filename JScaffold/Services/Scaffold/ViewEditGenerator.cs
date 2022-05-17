@@ -4,7 +4,7 @@ namespace JScaffold.Services.Scaffold
 {
     public class ViewEditGenerator
     {
-        public string GenerateCode(string controllerName, Dictionary<string, string> variables)
+        public string GenerateCode(string controllerName, Dictionary<string, string> variables, string projecName)
         {
             List<string> paras = new List<string>();
 
@@ -22,7 +22,7 @@ namespace JScaffold.Services.Scaffold
             string paraInput = string.Join("\n", paras);
             #endregion
 
-            return $@"@model {controllerName}
+            return $@"@model {projecName}.Models.Entities.{controllerName}
 
 <script>
     // 這個函數用來將 Entity Code 轉回中文
@@ -66,7 +66,7 @@ namespace JScaffold.Services.Scaffold
                                                 <option>B</option>
                                             </select>
                                         </div>
-                                        <input type=""hidden"" name=""Id"" value=@Model.Id />
+                                        <input type=""hidden"" name=""id"" value=@Model.id />
                                         <button type=""submit"" class=""btn btn-primary"">送出</button>
                                         <button type=""reset"" class=""btn btn-success"">重設</button>
                                         <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>

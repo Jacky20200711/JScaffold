@@ -4,7 +4,7 @@ namespace JScaffold.Services.Scaffold
 {
     public class ViewIndexGenerator
     {
-        public string GenerateCode(string controllerName, Dictionary<string, string> variables)
+        public string GenerateCode(string controllerName, Dictionary<string, string> variables, string projecName)
         {
             List<string> paras = new List<string>();
 
@@ -30,7 +30,7 @@ namespace JScaffold.Services.Scaffold
             string paraContent = string.Join("\n", paras);
             #endregion
 
-            return $@"@model List<{controllerName}>
+            return $@"@model List<{projecName}.Models.Entities.{controllerName}>
 
 <script>
     // 這個函數用來將 Entity Code 轉回中文
@@ -84,6 +84,7 @@ namespace JScaffold.Services.Scaffold
                             <table class=""table table-striped table-bordered table-hover"" id=""dataTables-example"">
                                 <thead>
                                     <tr>
+                                        <th style=""display:none;"">排版用(不顯示)</th>
 {paraTitle}
                                     </tr>
                                 </thead>
@@ -99,8 +100,8 @@ namespace JScaffold.Services.Scaffold
                                                     <td style=""display:none;"">@sequence</td>
 {paraContent}   
                                                     <td style=""white-space: nowrap;"">
-                                                        <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ id = data.Id }})'"">修改</button>
-                                                        <button class=""btn btn-danger"" onclick=""DeleteData(@data.Id)"">刪除</button>
+                                                        <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ id = data.id }})'"">修改</button>
+                                                        <button class=""btn btn-danger"" onclick=""DeleteData(@data.id)"">刪除</button>
                                                     </td>
                                                 </tr>
                                             }}
