@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace JScaffold.Services.Scaffold
 {
@@ -81,6 +80,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace {projectName}.Controllers
 {{
@@ -106,7 +106,7 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 _logger.LogError($""取得 {controllerName} 失敗 -> {{ex}}"");
-                return View(""~/Views/Shared/ErrorPage.cshtml"");
+                return Content(""<h2>資料庫異常，請聯絡相關人員!</h2>"", ""text/html"", Encoding.UTF8);
             }}
         }}
 
@@ -140,7 +140,7 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 _logger.LogError($""新增 {controllerName} 失敗 -> {{ex}}"");
-                return View(""~/Views/Shared/ErrorPage.cshtml"");
+                return Content(""<h2>資料庫異常，請聯絡相關人員!</h2>"", ""text/html"", Encoding.UTF8);
             }}
         }}
 
@@ -153,14 +153,14 @@ namespace {projectName}.Controllers
 
                 if (id == null)
                 {{
-                    return ""資料不存在"";
+                    return ""資料不存在!"";
                 }}
 
                 var data = await _context.{tableName}.FindAsync(id);
 
                 if (data == null)
                 {{
-                    return ""資料不存在"";
+                    return ""資料不存在!"";
                 }}
 
                 #endregion
@@ -174,29 +174,36 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 _logger.LogError($""刪除 {controllerName} 失敗 -> {{ex}}"");
-                return ""刪除失敗，系統忙碌中"";
+                return ""資料庫異常，請聯絡相關人員!"";
             }}
         }}
 
         public async Task<IActionResult> Edit(int? id)
         {{
-            #region 檢查此筆資料是否存在
-
-            if (id == null)
+            try
             {{
-                return NotFound();
+                #region 檢查此筆資料是否存在
+
+                if (id == null)
+                {{
+                    return Content(""<h2>資料id錯誤!</h2>"", ""text/html"", Encoding.UTF8);
+                }}
+
+                var data = await _context.{tableName}.FindAsync(id);
+
+                if (data == null)
+                {{
+                    return Content(""<h2>資料不存在!</h2>"", ""text/html"", Encoding.UTF8);
+                }}
+
+                #endregion
+
+                return View(data);
             }}
-
-            var data = await _context.{tableName}.FindAsync(id);
-
-            if (data == null)
+            catch (Exception)
             {{
-                return NotFound();
+                return Content(""<h2>資料庫異常，請聯絡相關人員!</h2>"", ""text/html"", Encoding.UTF8);
             }}
-
-            #endregion
-
-            return View(data);
         }}
 
         [HttpPost]
@@ -217,7 +224,7 @@ namespace {projectName}.Controllers
                     return RedirectToAction(""Index"");
                 }}
 
-                // 更新DB
+                // 修改資料並更新DB
 {paraAssign_edit}
                 await _context.SaveChangesAsync();
 
@@ -227,7 +234,7 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 _logger.LogError($""修改 {controllerName} 失敗 -> {{ex}}"");
-                return View(""~/Views/Shared/ErrorPage.cshtml"");
+                return Content(""<h2>資料庫異常，請聯絡相關人員!</h2>"", ""text/html"", Encoding.UTF8);
             }}
         }}
     }}
