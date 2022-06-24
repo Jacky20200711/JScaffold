@@ -106,7 +106,8 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 _logger.LogError($""取得 {controllerName} 失敗 -> {{ex}}"");
-                return Content(""<h2>資料庫異常，請聯絡相關人員!</h2>"", ""text/html"", Encoding.UTF8);
+                TempData[""message""] = ""操作失敗"";
+                return RedirectToRoute(new {{ controller = ""Home"", action = ""Index"" }});
             }}
         }}
 
@@ -130,18 +131,17 @@ namespace {projectName}.Controllers
 {paraAssign_create}
                 }};
                 
-                // 更新DB
+                // 新增資料    
                 _context.Add(newData);
                 await _context.SaveChangesAsync();
-                
                 TempData[""message""] = ""新增成功"";
-                return RedirectToAction(""Index"");
             }}
             catch (Exception ex)
             {{
                 _logger.LogError($""新增 {controllerName} 失敗 -> {{ex}}"");
-                return Content(""<h2>資料庫異常，請聯絡相關人員!</h2>"", ""text/html"", Encoding.UTF8);
+                TempData[""message""] = ""操作失敗"";
             }}
+            return RedirectToAction(""Index"");
         }}
 
         [HttpPost]
@@ -149,32 +149,15 @@ namespace {projectName}.Controllers
         {{
             try
             {{
-                #region 檢查此筆資料是否存在
-
-                if (id == null)
-                {{
-                    return ""資料不存在!"";
-                }}
-
                 var data = await _context.{tableName}.FindAsync(id);
-
-                if (data == null)
-                {{
-                    return ""資料不存在!"";
-                }}
-
-                #endregion
-
-                // 更新DB
                 _context.Remove(data);
                 await _context.SaveChangesAsync();
-
                 return ""刪除成功"";
             }}
             catch (Exception ex)
             {{
                 _logger.LogError($""刪除 {controllerName} 失敗 -> {{ex}}"");
-                return ""資料庫異常，請聯絡相關人員!"";
+                return ""操作失敗"";
             }}
         }}
 
@@ -182,27 +165,13 @@ namespace {projectName}.Controllers
         {{
             try
             {{
-                #region 檢查此筆資料是否存在
-
-                if (id == null)
-                {{
-                    return Content(""<h2>資料id錯誤!</h2>"", ""text/html"", Encoding.UTF8);
-                }}
-
                 var data = await _context.{tableName}.FindAsync(id);
-
-                if (data == null)
-                {{
-                    return Content(""<h2>資料不存在!</h2>"", ""text/html"", Encoding.UTF8);
-                }}
-
-                #endregion
-
                 return View(data);
             }}
             catch (Exception)
             {{
-                return Content(""<h2>資料庫異常，請聯絡相關人員!</h2>"", ""text/html"", Encoding.UTF8);
+                TempData[""message""] = ""操作失敗"";
+                return RedirectToAction(""Index"");
             }}
         }}
 
@@ -216,26 +185,20 @@ namespace {projectName}.Controllers
                 int id = int.Parse(PostData[""id""].ToString());
 {paraFetch}
 
-                // 撈取目標
+                // 撈取資料
                 var data = await _context.{tableName}.FindAsync(id);
-                if (data == null)
-                {{
-                    TempData[""message""] = ""修改失敗，此筆資料不存在"";
-                    return RedirectToAction(""Index"");
-                }}
 
-                // 修改資料並更新DB
+                // 修改資料
 {paraAssign_edit}
                 await _context.SaveChangesAsync();
-
                 TempData[""message""] = ""修改成功"";
-                return RedirectToAction(""Index"");
             }}
             catch (Exception ex)
             {{
                 _logger.LogError($""修改 {controllerName} 失敗 -> {{ex}}"");
-                return Content(""<h2>資料庫異常，請聯絡相關人員!</h2>"", ""text/html"", Encoding.UTF8);
+                TempData[""message""] = ""操作失敗"";
             }}
+            return RedirectToAction(""Index"");
         }}
     }}
 }}";
