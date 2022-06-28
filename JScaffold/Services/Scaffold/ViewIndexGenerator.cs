@@ -90,21 +90,18 @@ namespace JScaffold.Services.Scaffold
                                 </thead>
                                 <tbody>
                                     @{{
-                                        if(Model != null)
+                                        int sequence = 0;
+                                        foreach (var data in Model)
                                         {{
-                                            int sequence = 0;
-                                            foreach (var data in Model)
-                                            {{
-                                                sequence++;
-                                                <tr class=""gradeA"">
-                                                    <td style=""display:none;"">@sequence</td>
+                                            sequence++;
+                                            <tr class=""gradeA"">
+                                                <td style=""display:none;"">@sequence</td>
 {paraContent}   
-                                                    <td style=""white-space: nowrap;"">
-                                                        <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ id = data.id }})'"">修改</button>
-                                                        <button class=""btn btn-danger"" onclick=""DeleteData(@data.id)"">刪除</button>
-                                                    </td>
-                                                </tr>
-                                            }}
+                                                <td style=""white-space: nowrap;"">
+                                                    <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ id = data.id }})'"">修改</button>
+                                                    <button class=""btn btn-danger"" onclick=""DeleteData(@data.id)"">刪除</button>
+                                                </td>
+                                            </tr>
                                         }}
                                     }}
                                 </tbody>

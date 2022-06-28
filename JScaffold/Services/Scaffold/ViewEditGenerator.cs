@@ -69,7 +69,7 @@ namespace JScaffold.Services.Scaffold
                                     <input type=""hidden"" name=""id"" value=@Model.{idName} />
                                     <button type=""submit"" class=""btn btn-primary"">送出</button>
                                     <button type=""reset"" class=""btn btn-success"">重設</button>
-                                    <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
+                                    <button class=""btn btn-danger"" onclick=""location.href='@Url.Action(""Index"", ""{controllerName}"")'"">返回列表</button>
                                 </form>
                             </div>
                         </div>
