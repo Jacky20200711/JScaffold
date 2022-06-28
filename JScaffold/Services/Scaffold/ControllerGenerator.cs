@@ -7,6 +7,9 @@ namespace JScaffold.Services.Scaffold
         public string GenerateCode(string projectName, string controllerName, string contextName, string tableName, Dictionary<string, string> variables)
         {
             List<string> paras = new List<string>();
+            string idName = "id";
+            if (variables.ContainsKey("ID")) idName = "ID";
+            if (variables.ContainsKey("Id")) idName = "Id";
 
             #region 取得提取參數的細節
             foreach (var item in variables)
@@ -19,15 +22,15 @@ namespace JScaffold.Services.Scaffold
 
                 if (item.Value == "int" || item.Value == "int?")
                 {
-                    paras.Add($"                {item.Value} {item.Key} = int.TryParse(PostData[\"{item.Key}\"].ToString(), out int val) ? val : 0;");
+                    paras.Add($"                {item.Value} {item.Key} = int.Parse(PostData[\"{item.Key}\"]);");
                 }
                 else if (item.Value == "float" || item.Value == "float?")
                 {
-                    paras.Add($"                {item.Value} {item.Key} = float.Parse(PostData[\"{item.Key}\"].ToString());");
+                    paras.Add($"                {item.Value} {item.Key} = float.Parse(PostData[\"{item.Key}\"]);");
                 }
                 else if (item.Value == "double" || item.Value == "double?")
                 {
-                    paras.Add($"                {item.Value} {item.Key} = double.Parse(PostData[\"{item.Key}\"].ToString());");
+                    paras.Add($"                {item.Value} {item.Key} = double.Parse(PostData[\"{item.Key}\"]);");
                 }
                 else if (item.Value == "DateTime" || item.Value == "DateTime?")
                 {
@@ -66,21 +69,19 @@ namespace JScaffold.Services.Scaffold
                     continue;
                 }
 
-                paras.Add($"                data.{item.Key} = {item.Key};");
+                paras.Add($"                _context.Entry(editData).Property(p => p.{item.Key}).IsModified = true;");
             }
             string paraAssign_edit = string.Join("\n", paras);
             #endregion
 
             return $@"using {projectName}.Models;
 using {projectName}.Models.Entities;
-using {projectName}.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using System.Text;
 
 namespace {projectName}.Controllers
 {{
@@ -145,12 +146,12 @@ namespace {projectName}.Controllers
         }}
 
         [HttpPost]
-        public async Task<string> Delete(int? id)
+        public async Task<string> Delete(int id)
         {{
             try
             {{
-                var data = await _context.{tableName}.FindAsync(id);
-                _context.Remove(data);
+                {controllerName} data = new {controllerName}() {{ {idName} = id }};
+                _context.Entry(data).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
                 return ""刪除成功"";
             }}
@@ -182,14 +183,21 @@ namespace {projectName}.Controllers
             try
             {{
                 // 提取參數
-                int id = int.Parse(PostData[""id""].ToString());
+                int id = int.Parse(PostData[""id""]);
 {paraFetch}
 
-                // 撈取資料
-                var data = await _context.{tableName}.FindAsync(id);
-
-                // 修改資料
+                // 創建資料
+                {controllerName} editData = new {controllerName}()
+                {{
+                    {idName} = id,
+{paraAssign_create}
+                }};
+                
+                // 標記要修改的欄位
+                _context.Attach(editData);
 {paraAssign_edit}
+
+                // 更新DB
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""修改成功"";
             }}
