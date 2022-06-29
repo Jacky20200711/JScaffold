@@ -22,20 +22,7 @@ namespace JScaffold.Services.Scaffold
             string paraInput = string.Join("\n", paras);
             #endregion
 
-            return $@"<script>
-    // 這個函數用來將 Entity Code 轉回中文
-    function decodeEntities(encodedString) {{
-        var textArea = document.createElement('textarea');
-        textArea.innerHTML = encodedString;
-        return textArea.value;
-    }}
-    var serverMessage = decodeEntities('@TempData[""message""]');
-    if (serverMessage.length > 0) {{
-        alert(serverMessage);
-    }}
-</script>
-
-<div id=""page-wrapper"">
+            return $@"<div id=""page-wrapper"">
     <div class=""container-fluid"">
         <div class=""row"">
             <div class=""col-lg-12"">
@@ -62,7 +49,7 @@ namespace JScaffold.Services.Scaffold
                                     </div>
                                     <button type=""submit"" class=""btn btn-primary"">送出</button>
                                     <button type=""reset"" class=""btn btn-success"">重設</button>
-                                    <button class=""btn btn-danger"" onclick=""location.href='@Url.Action(""Index"", ""{controllerName}"")'"">返回列表</button>
+                                    <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
                                 </form>
                             </div>
                         </div>
@@ -71,7 +58,8 @@ namespace JScaffold.Services.Scaffold
             </div>
         </div>
     </div>
-</div>";
+</div>
+";
         }
     }
 }

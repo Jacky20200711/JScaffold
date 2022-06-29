@@ -7,6 +7,9 @@ namespace JScaffold.Services.Scaffold
         public string GenerateCode(string controllerName, Dictionary<string, string> variables, string projecName)
         {
             List<string> paras = new List<string>();
+            string idName = "id";
+            if (variables.ContainsKey("ID")) idName = "ID";
+            if (variables.ContainsKey("Id")) idName = "Id";
 
             #region 設定標題列
             foreach (var item in variables)
@@ -51,6 +54,10 @@ namespace JScaffold.Services.Scaffold
         var result = confirm(""確定要刪除這筆資料?"");
         if (result) {{
             $.ajax({{
+                beforeSend: function (xhr) {{
+                    xhr.setRequestHeader(""requestverificationtoken"",
+                        $('input:hidden[name=""__RequestVerificationToken""]').val());
+                }},
                 type: 'POST',
                 url: '@Url.Action(""Delete"", ""{controllerName}"")',
                 data: {{ id: idOfData }}
@@ -65,6 +72,7 @@ namespace JScaffold.Services.Scaffold
     }}
 </script>
 
+@Html.AntiForgeryToken()
 <div id = ""page-wrapper"" >
      <div class=""container-fluid"">
         <div class=""row"">
@@ -98,8 +106,8 @@ namespace JScaffold.Services.Scaffold
                                                 <td style=""display:none;"">@sequence</td>
 {paraContent}   
                                                 <td style=""white-space: nowrap;"">
-                                                    <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ id = data.id }})'"">修改</button>
-                                                    <button class=""btn btn-danger"" onclick=""DeleteData(@data.id)"">刪除</button>
+                                                    <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ id = data.{idName} }})'"">修改</button>
+                                                    <button class=""btn btn-danger"" onclick=""DeleteData(@data.{idName})"">刪除</button>
                                                 </td>
                                             </tr>
                                         }}
@@ -112,7 +120,8 @@ namespace JScaffold.Services.Scaffold
             </div>
         </div>
     </div>
-</div>";
+</div>
+";
         }
     }
 }

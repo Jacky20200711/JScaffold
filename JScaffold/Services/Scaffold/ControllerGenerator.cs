@@ -146,6 +146,7 @@ namespace {projectName}.Controllers
         }}
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<string> Delete(int id)
         {{
             try
@@ -209,7 +210,8 @@ namespace {projectName}.Controllers
             return RedirectToAction(""Index"");
         }}
     }}
-}}";
+}}
+";
         }
     }
 }

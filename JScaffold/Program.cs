@@ -3,6 +3,7 @@ using JScaffold.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace JScaffold
 {
@@ -10,8 +11,8 @@ namespace JScaffold
     {
         public static void WriteToFile(string path, string text)
         {
-            StreamWriter streamWriter = new StreamWriter(path);
-            streamWriter.WriteLine(text);
+            StreamWriter streamWriter = new StreamWriter(new FileStream(path, FileMode.Create, FileAccess.ReadWrite), Encoding.UTF8);
+            streamWriter.Write(text);
             streamWriter.Close();
         }
 
