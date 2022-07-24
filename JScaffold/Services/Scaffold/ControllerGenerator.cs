@@ -54,7 +54,11 @@ namespace JScaffold.Services.Scaffold
                     continue;
                 }
 
-                paras.Add($"                    {item.Key} = {item.Key},");
+                // 若是字串則去除首尾空白
+                if(item.Value == "string")
+                {
+                    paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
+                }
             }
             string paraAssign_create = string.Join("\n", paras);
             #endregion
@@ -69,14 +73,16 @@ namespace JScaffold.Services.Scaffold
                     continue;
                 }
 
-                paras.Add($"                _context.Entry(editData).Property(p => p.{item.Key}).IsModified = true;");
+                // 若是字串則去除首尾空白
+                if (item.Value == "string")
+                {
+                    paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
+                }
             }
             string paraAssign_edit = string.Join("\n", paras);
             #endregion
 
-            return $@"using {projectName}.Models;
-using {projectName}.Models.Entities;
-using Microsoft.AspNetCore.Http;
+            return $@"using {projectName}.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -123,6 +129,7 @@ namespace {projectName}.Controllers
         {{
             try
             {{
+{paraAssign_create}
                 _context.Add(data);
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""新增成功"";
@@ -173,6 +180,7 @@ namespace {projectName}.Controllers
         {{
             try
             {{
+{paraAssign_edit}
                 _context.Update(data);
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""修改成功"";
