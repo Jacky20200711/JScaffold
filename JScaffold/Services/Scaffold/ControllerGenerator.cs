@@ -119,21 +119,11 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(IFormCollection PostData)
+        public async Task<IActionResult> Create({controllerName} data)
         {{
             try
             {{
-                // 提取參數
-{paraFetch}
-                
-                // 創建資料
-                {controllerName} newData = new {controllerName}()
-                {{
-{paraAssign_create}
-                }};
-                
-                // 新增資料    
-                _context.Add(newData);
+                _context.Add(data);
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""新增成功"";
             }}
@@ -179,26 +169,11 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(IFormCollection PostData)
+        public async Task<IActionResult> Edit({controllerName} data)
         {{
             try
             {{
-                // 提取參數
-                int id = int.Parse(PostData[""id""]);
-{paraFetch}
-
-                // 創建資料
-                {controllerName} editData = new {controllerName}()
-                {{
-                    {idName} = id,
-{paraAssign_create}
-                }};
-                
-                // 標記要修改的欄位
-                _context.Attach(editData);
-{paraAssign_edit}
-
-                // 更新DB
+                _context.Update(data);
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""修改成功"";
             }}
