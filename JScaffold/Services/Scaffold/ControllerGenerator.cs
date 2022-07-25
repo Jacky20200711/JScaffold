@@ -54,8 +54,17 @@ namespace JScaffold.Services.Scaffold
                     continue;
                 }
 
-                // 若是字串則去除首尾空白
-                if(item.Value == "string")
+                // 若是常見的特定欄位則額外處理
+                if (item.Key == "modify_user" || item.Key == "ModifyUser")
+                {
+                    paras.Add($"                data.{item.Key} = Utility.GetLoginName(HttpContext);");
+                }
+                else if (item.Key == "modify_date" || item.Key == "ModifyDate")
+                {
+                    paras.Add($"                data.{item.Key} = DateTime.Now;");
+                }
+                // 若是一般的字串則去除首尾空白
+                else if (item.Value == "string")
                 {
                     paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
                 }
@@ -67,40 +76,68 @@ namespace JScaffold.Services.Scaffold
             paras.Clear();
             foreach (var item in variables)
             {
+                // 若是常見的特定欄位則優先處理
+                if (item.Key == "modify_user" || item.Key == "ModifyUser")
+                {
+                    paras.Add($"                    {item.Key} = Utility.GetLoginName(HttpContext),");
+                }
+                else if (item.Key == "modify_date" || item.Key == "ModifyDate")
+                {
+                    paras.Add($"                    {item.Key} = DateTime.Now,");
+                }
+                // 若是一班的欄位則取出並轉型
+                else if (item.Value == "int" || item.Value == "int?")
+                {
+                    paras.Add($"                    {item.Key} = int.Parse(PostData[\"{item.Key}\"]),");
+                }
+                else if (item.Value == "float" || item.Value == "float?")
+                {
+                    paras.Add($"                    {item.Key} = float.Parse(PostData[\"{item.Key}\"]),");
+                }
+                else if (item.Value == "double" || item.Value == "double?")
+                {
+                    paras.Add($"                    {item.Key} = double.Parse(PostData[\"{item.Key}\"]),");
+                }
+                else
+                {
+                    paras.Add($"                    {item.Key} = PostData[\"{item.Key}\"].ToString().Trim(),");
+                }
+            }
+            string paraSetting = string.Join("\n", paras);
+
+            paras.Clear();
+            foreach (var item in variables)
+            {
                 // 排除 Primary key
                 if (item.Key.ToLower() == "id")
                 {
                     continue;
                 }
 
-                // 若是字串則去除首尾空白
-                if (item.Value == "string")
-                {
-                    paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
-                }
+                paras.Add($"                _context.Entry(editData).Property(p => p.{item.Key}).IsModified = true;");
             }
             string paraAssign_edit = string.Join("\n", paras);
             #endregion
 
             return $@"using {projectName}.Models.Entities;
+using {projectName}.Services;
+using {projectName}.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace {projectName}.Controllers
 {{
     //[AuthorizeManager]
     public class {controllerName}Controller : Controller
     {{
-        private readonly ILogger<{controllerName}Controller> _logger;
         private readonly {contextName} _context;
 
-        public {controllerName}Controller({contextName} context, ILogger<{controllerName}Controller> logger)
+        public {controllerName}Controller({contextName} context)
         {{
             _context = context;
-            _logger = logger;
         }}
 
         public async Task<IActionResult> Index()
@@ -112,7 +149,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""取得 {controllerName} 失敗 -> {{ex}}"");
+                Console.WriteLine($""取得 {controllerName} 失敗 -> {{ex}}"");
                 TempData[""message""] = ""操作失敗"";
                 return RedirectToRoute(new {{ controller = ""Home"", action = ""Index"" }});
             }}
@@ -136,7 +173,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""新增 {controllerName} 失敗 -> {{ex}}"");
+                Console.WriteLine($""新增 {controllerName} 失敗 -> {{ex}}"");
                 TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");
@@ -144,20 +181,29 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<string> Delete(int id)
+        public async Task<Result> Delete(int id)
         {{
+            Result result = new Result
+            {{
+                Code = 0,
+                Message = ""fail""
+            }};
+
             try
             {{
                 {controllerName} data = new {controllerName}() {{ {idName} = id }};
                 _context.Entry(data).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
-                return ""刪除成功"";
+                TempData[""message""] = ""刪除成功"";
+                result.Code = 1;
+                result.Message = ""success"";
+                return result;
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""刪除 {controllerName} 失敗 -> {{ex}}"");
-                return ""操作失敗"";
+                result.Message = ex.ToString();
             }}
+            return result;
         }}
 
         public async Task<IActionResult> Edit(int? id)
@@ -167,8 +213,9 @@ namespace {projectName}.Controllers
                 var data = await _context.{tableName}.FindAsync(id);
                 return View(data);
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
+                Console.WriteLine($""準備修改 {controllerName} 時發生錯誤 -> {{ex}}"");
                 TempData[""message""] = ""操作失敗"";
                 return RedirectToAction(""Index"");
             }}
@@ -176,18 +223,27 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit({controllerName} data)
+        public async Task<IActionResult> Edit(IFormCollection PostData)
         {{
             try
             {{
+                // 創建資料
+                {controllerName} editData = new {controllerName}()
+                {{
+{paraSetting}
+                }};
+                
+                // 標記要修改的欄位
+                _context.Attach(editData);
 {paraAssign_edit}
-                _context.Update(data);
+
+                // 更新DB
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""修改成功"";
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""修改 {controllerName} 失敗 -> {{ex}}"");
+                Console.WriteLine($""修改 {controllerName} 失敗 -> {{ex}}"");
                 TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");

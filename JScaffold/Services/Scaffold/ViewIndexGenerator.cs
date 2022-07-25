@@ -45,7 +45,7 @@ namespace JScaffold.Services.Scaffold
     var serverMessage = decodeEntities('@TempData[""message""]');
     if (serverMessage.length > 0)
     {{
-        alert(serverMessage);
+        Swal.fire(serverMessage);
     }}
 </script>
 
@@ -62,10 +62,13 @@ namespace JScaffold.Services.Scaffold
                 url: '@Url.Action(""Delete"", ""{controllerName}"")',
                 data: {{ id: idOfData }}
             }})
-            .done(function (message) {{
-                alert(message);
-                if (message == ""刪除成功"") {{
+            .done(function (result) {{
+                if (result[""code""] == 1) {{
                     self.location.reload();
+                }}
+                else
+                {{
+                    Swal.fire(""操作失敗"");
                 }}
             }});
         }}
