@@ -15,6 +15,8 @@ namespace JScaffold.Services.Scaffold
             foreach (var item in variables)
             {
                 if (item.Key.ToLower() == "id") continue;
+                if (item.Key == "modify_user" || item.Key == "ModifyUser") continue;
+                if (item.Key == "modify_date" || item.Key == "ModifyDate") continue;
 
                 paras.Add($"                                        <div class=\"form-group\">");
                 paras.Add($"                                            <label>{item.Key}</label>");
