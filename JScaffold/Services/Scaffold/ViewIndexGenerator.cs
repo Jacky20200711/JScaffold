@@ -36,7 +36,7 @@ namespace JScaffold.Services.Scaffold
             return $@"@model List<{projecName}.Models.Entities.{controllerName}>
 
 <script>
-    // 這個函數用來將 Entity Code 轉回中文
+    // 這個函數用來將 Entity Code 轉回原文
     function decodeEntities(encodedString) {{
         var textArea = document.createElement('textarea');
         textArea.innerHTML = encodedString;

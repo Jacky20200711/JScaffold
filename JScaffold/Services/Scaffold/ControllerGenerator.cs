@@ -85,7 +85,7 @@ namespace JScaffold.Services.Scaffold
                 {
                     paras.Add($"                    {item.Key} = DateTime.Now,");
                 }
-                // 若是一班的欄位則取出並轉型
+                // 若是一般的欄位則取出並轉型
                 else if (item.Value == "int" || item.Value == "int?")
                 {
                     paras.Add($"                    {item.Key} = int.Parse(PostData[\"{item.Key}\"]),");
@@ -97,6 +97,10 @@ namespace JScaffold.Services.Scaffold
                 else if (item.Value == "double" || item.Value == "double?")
                 {
                     paras.Add($"                    {item.Key} = double.Parse(PostData[\"{item.Key}\"]),");
+                }
+                else if (item.Value == "DateTime" || item.Value == "DateTime?")
+                {
+                    paras.Add($"                    {item.Key} = Convert.ToDateTime(PostData[\"{item.Key}\"].ToString()),");
                 }
                 else
                 {
