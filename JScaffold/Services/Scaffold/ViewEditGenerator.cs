@@ -55,6 +55,28 @@ namespace JScaffold.Services.Scaffold
                                             <option>A</option>
                                             <option>B</option>
                                         </select>
+                                        <div class=""form-group"" style=""margin-top:25px;"">
+                                            <label>Inline Checkboxes測試</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <label class=""checkbox-inline"">
+                                                <input type=""checkbox"" name=""cbox1"" style=""width:18px;height:18px; cursor:pointer; margin-top:3px;"" checked>
+                                                <label style=""margin-left:4px; font-size:14px; margin-top:3px;"">測試1</label>
+                                            </label>
+                                            <label class=""checkbox-inline"">
+                                                <input type=""checkbox"" name=""cbox2"" style=""width:18px;height:18px; cursor:pointer; margin-top:3px;"">
+                                                <label style=""margin-left:4px; font-size:14px; margin-top:3px;"">測試2</label>
+                                            </label>
+                                        </div>
+                                        <div class=""form-group"" style=""margin-top:25px;"">
+                                            <label>Inline CheckRadio測試</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <label class=""radio-inline"">
+                                                <input type=""radio"" style=""width:18px;height:18px; cursor:pointer; margin-top:3px;"" name=""rbox"" value=""option1"" checked>
+                                                <label style=""margin-left:4px; font-size:14px; margin-top:3px;"">測試1</label>
+                                            </label>
+                                            <label class=""radio-inline"">
+                                                <input type=""radio"" style=""width:18px;height:18px; cursor:pointer; margin-top:3px;"" name=""rbox"" value=""option2"">
+                                                <label style=""margin-left:4px; font-size:14px; margin-top:3px;"">測試2</label>
+                                            </label>
+                                        </div>
                                     </div>
                                     <input type=""hidden"" name=""id"" value=@Model.{idName} />
                                     <button type=""submit"" class=""btn btn-primary"">送出</button>
