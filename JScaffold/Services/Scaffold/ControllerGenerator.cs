@@ -79,37 +79,21 @@ namespace JScaffold.Services.Scaffold
                 // 若是常見的特定欄位則優先處理
                 if (item.Key == "modify_user" || item.Key == "ModifyUser")
                 {
-                    paras.Add($"                    {item.Key} = Utility.GetLoginName(HttpContext),");
+                    paras.Add($"                data.{item.Key} = Utility.GetLoginName(HttpContext);");
                 }
                 else if (item.Key == "modify_date" || item.Key == "ModifyDate")
                 {
-                    paras.Add($"                    {item.Key} = DateTime.Now,");
+                    paras.Add($"                data.{item.Key} = DateTime.Now;");
                 }
-                // 若是一般的欄位則取出並轉型
-                else if (item.Value == "int" || item.Value == "int?")
+                else if (item.Value.StartsWith("string"))
                 {
-                    paras.Add($"                    {item.Key} = int.Parse(PostData[\"{item.Key}\"]),");
-                }
-                else if (item.Value == "float" || item.Value == "float?")
-                {
-                    paras.Add($"                    {item.Key} = float.Parse(PostData[\"{item.Key}\"]),");
-                }
-                else if (item.Value == "double" || item.Value == "double?")
-                {
-                    paras.Add($"                    {item.Key} = double.Parse(PostData[\"{item.Key}\"]),");
-                }
-                else if (item.Value == "DateTime" || item.Value == "DateTime?")
-                {
-                    paras.Add($"                    {item.Key} = Convert.ToDateTime(PostData[\"{item.Key}\"].ToString()),");
-                }
-                else
-                {
-                    paras.Add($"                    {item.Key} = PostData[\"{item.Key}\"].ToString().Trim(),");
+                    paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
                 }
             }
-            string paraSetting = string.Join("\n", paras);
 
+            string paraSetting = string.Join("\n", paras);
             paras.Clear();
+
             foreach (var item in variables)
             {
                 // 排除 Primary key
@@ -118,19 +102,18 @@ namespace JScaffold.Services.Scaffold
                     continue;
                 }
 
-                paras.Add($"                _context.Entry(editData).Property(p => p.{item.Key}).IsModified = true;");
+                paras.Add($"                _context.Entry(data).Property(p => p.{item.Key}).IsModified = true;");
             }
             string paraAssign_edit = string.Join("\n", paras);
             #endregion
 
             return $@"using {projectName}.Models.Entities;
-using {projectName}.Services;
 using {projectName}.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace {projectName}.Controllers
 {{
@@ -138,10 +121,12 @@ namespace {projectName}.Controllers
     public class {controllerName}Controller : Controller
     {{
         private readonly {contextName} _context;
+        private readonly ILogger<{controllerName}> _logger;
 
-        public {controllerName}Controller({contextName} context)
+        public {controllerName}Controller({contextName} context, ILogger<{controllerName}> logger)
         {{
             _context = context;
+            _logger = logger;
         }}
 
         public async Task<IActionResult> Index()
@@ -153,7 +138,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                Console.WriteLine($""取得 {controllerName} 失敗 -> {{ex}}"");
+                _logger.LogError($""撈取 {controllerName} 失敗 -> {{ex}}"");
                 TempData[""message""] = ""操作失敗"";
                 return RedirectToRoute(new {{ controller = ""Home"", action = ""Index"" }});
             }}
@@ -177,7 +162,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                Console.WriteLine($""新增 {controllerName} 失敗 -> {{ex}}"");
+                _logger.LogError($""新增 {controllerName} 失敗 -> {{ex}}"");
                 TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");
@@ -205,6 +190,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
+                _logger.LogError($""刪除 {controllerName} 失敗 -> {{ex}}"");
                 result.Message = ex.ToString();
             }}
             return result;
@@ -214,12 +200,23 @@ namespace {projectName}.Controllers
         {{
             try
             {{
+                if (id == null)
+                {{
+                    return NotFound();
+                }}
+
                 var data = await _context.{tableName}.FindAsync(id);
+
+                if(data == null)
+                {{
+                    return NotFound();
+                }}
+
                 return View(data);
             }}
             catch (Exception ex)
             {{
-                Console.WriteLine($""準備修改 {controllerName} 時發生錯誤 -> {{ex}}"");
+                _logger.LogError($""準備修改 {controllerName} 時發生錯誤 -> {{ex}}"");
                 TempData[""message""] = ""操作失敗"";
                 return RedirectToAction(""Index"");
             }}
@@ -227,18 +224,15 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(IFormCollection PostData)
+        public async Task<IActionResult> Edit({controllerName} data)
         {{
             try
             {{
-                // 創建資料
-                {controllerName} editData = new {controllerName}()
-                {{
+                // 調整欄位
 {paraSetting}
-                }};
                 
                 // 標記要修改的欄位
-                _context.Attach(editData);
+                _context.Attach(data);
 {paraAssign_edit}
 
                 // 更新DB
@@ -247,7 +241,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                Console.WriteLine($""修改 {controllerName} 失敗 -> {{ex}}"");
+                _logger.LogError($""修改 {controllerName} 失敗 -> {{ex}}"");
                 TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");

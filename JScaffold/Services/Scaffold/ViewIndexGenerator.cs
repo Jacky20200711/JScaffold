@@ -45,33 +45,56 @@ namespace JScaffold.Services.Scaffold
     var serverMessage = decodeEntities('@TempData[""message""]');
     if (serverMessage.length > 0)
     {{
-        Swal.fire(serverMessage);
+        Swal.fire({{
+            title: serverMessage,
+            showCancelButton: false,
+            customClass: {{
+                title: 'swal-title-font-size',
+                confirmButton: 'swal-button-font-size',
+            }}
+        }});
     }}
 </script>
 
 <script>
     function DeleteData(idOfData) {{
-        var result = confirm(""確定要刪除這筆資料?"");
-        if (result) {{
-            $.ajax({{
-                beforeSend: function (xhr) {{
-                    xhr.setRequestHeader(""requestverificationtoken"",
-                        $('input:hidden[name=""__RequestVerificationToken""]').val());
-                }},
-                type: 'POST',
-                url: '@Url.Action(""Delete"", ""{controllerName}"")',
-                data: {{ id: idOfData }}
-            }})
-            .done(function (result) {{
-                if (result[""code""] == 1) {{
-                    self.location.reload();
-                }}
-                else
-                {{
-                    Swal.fire(""操作失敗"");
-                }}
-            }});
-        }}
+        Swal.fire({{
+            title: ""確定要刪除?"",
+            showCancelButton: true,
+            customClass: {{
+                title: 'swal-title-font-size',
+                confirmButton: 'swal-button-font-size',
+                cancelButton: 'swal-button-font-size'
+            }}
+        }}).then(function(result) {{
+            if (result.value) {{
+                $.ajax({{
+                    beforeSend: function (xhr) {{
+                        xhr.setRequestHeader(""requestverificationtoken"",
+                            $('input:hidden[name=""__RequestVerificationToken""]').val());
+                    }},
+                    type: 'POST',
+                    url: '@Url.Action(""Delete"", ""{controllerName}"")',
+                    data: {{ id: idOfData }}
+                }})
+                .done(function (result) {{
+                    if (result[""code""] == 1) {{
+                        self.location.reload();
+                    }}
+                    else
+                    {{
+                        Swal.fire({{
+                            title: ""操作失敗"",
+                            showCancelButton: false,
+                            customClass: {{
+                                title: 'swal-title-font-size',
+                                confirmButton: 'swal-button-font-size',
+                            }}
+                        }});
+                    }}
+                }});
+            }}
+        }});
     }}
 </script>
 
