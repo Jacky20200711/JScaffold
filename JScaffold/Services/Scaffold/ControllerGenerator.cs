@@ -11,40 +11,7 @@ namespace JScaffold.Services.Scaffold
             if (variables.ContainsKey("ID")) idName = "ID";
             if (variables.ContainsKey("Id")) idName = "Id";
 
-            #region 取得提取參數的細節
-            foreach (var item in variables)
-            {
-                // 排除 Primary key
-                if (item.Key.ToLower() == "id")
-                {
-                    continue;
-                }
-
-                if (item.Value == "int" || item.Value == "int?")
-                {
-                    paras.Add($"                {item.Value} {item.Key} = int.Parse(PostData[\"{item.Key}\"]);");
-                }
-                else if (item.Value == "float" || item.Value == "float?")
-                {
-                    paras.Add($"                {item.Value} {item.Key} = float.Parse(PostData[\"{item.Key}\"]);");
-                }
-                else if (item.Value == "double" || item.Value == "double?")
-                {
-                    paras.Add($"                {item.Value} {item.Key} = double.Parse(PostData[\"{item.Key}\"]);");
-                }
-                else if (item.Value == "DateTime" || item.Value == "DateTime?")
-                {
-                    paras.Add($"                {item.Value} {item.Key} = DateTime.Now;");
-                }
-                else
-                {
-                    paras.Add($"                {item.Value} {item.Key} = PostData[\"{item.Key}\"].ToString().Trim();");
-                }
-            }
-            string paraFetch = string.Join("\n", paras);
-            #endregion
-
-            #region 取得新增資料的細節
+            #region 設定新增資料的欄位
             paras.Clear();
             foreach (var item in variables)
             {
@@ -66,13 +33,13 @@ namespace JScaffold.Services.Scaffold
                 // 若是一般的字串則去除首尾空白
                 else if (item.Value == "string")
                 {
-                    paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
+                    paras.Add($"                data.{item.Key} = data.{item.Key}?.Trim();");
                 }
             }
             string paraAssign_create = string.Join("\n", paras);
             #endregion
 
-            #region 取得修改資料的細節
+            #region 設定修改資料的欄位
             paras.Clear();
             foreach (var item in variables)
             {
@@ -87,7 +54,7 @@ namespace JScaffold.Services.Scaffold
                 }
                 else if (item.Value.StartsWith("string"))
                 {
-                    paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
+                    paras.Add($"                data.{item.Key} = data.{item.Key}?.Trim();");
                 }
             }
 
