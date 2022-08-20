@@ -141,8 +141,7 @@ namespace {projectName}.Controllers
         {{
             Result result = new Result
             {{
-                Code = 0,
-                Message = ""fail""
+                Code = 0
             }};
 
             try
@@ -152,13 +151,11 @@ namespace {projectName}.Controllers
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""刪除成功"";
                 result.Code = 1;
-                result.Message = ""success"";
                 return result;
             }}
             catch (Exception ex)
             {{
                 _logger.LogError($""刪除 {controllerName} 失敗 -> {{ex}}"");
-                result.Message = ex.ToString();
             }}
             return result;
         }}
