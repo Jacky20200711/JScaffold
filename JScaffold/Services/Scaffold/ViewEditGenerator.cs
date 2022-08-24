@@ -18,10 +18,10 @@ namespace JScaffold.Services.Scaffold
                 if (item.Key == "modify_user" || item.Key == "ModifyUser") continue;
                 if (item.Key == "modify_date" || item.Key == "ModifyDate") continue;
 
-                paras.Add($"                                        <div class=\"form-group\">");
-                paras.Add($"                                            <label>{item.Key}</label>");
-                paras.Add($"                                            <input class=\"form-control\" name=\"{item.Key}\" maxlength=\"100\" value=\"@Model.{item.Key}\">");
-                paras.Add($"                                        </div>");
+                paras.Add($"                                    <div class=\"form-group\">");
+                paras.Add($"                                        <label>{item.Key}</label>");
+                paras.Add($"                                        <input class=\"form-control\" name=\"{item.Key}\" maxlength=\"100\" value=\"@Model.{item.Key}\">");
+                paras.Add($"                                    </div>");
 
             }
             string paraInput = string.Join("\n", paras);
@@ -35,9 +35,7 @@ namespace JScaffold.Services.Scaffold
             <div class=""col-lg-12"">
                 <h1 class=""page-header"">修改資料</h1>
             </div>
-            <!-- /.col-lg-12 -->
         </div>
-        <!-- /.row -->
         <div class=""row"">
             <div class=""col-lg-12"">
                 <div class=""panel panel-default"">
@@ -48,43 +46,41 @@ namespace JScaffold.Services.Scaffold
                         <div class=""row"">
                             <div class=""col-lg-6"">
                                 <form role=""form"" asp-controller=""{controllerName}"" asp-action=""Edit"">
-                                    <div class=""form-group"">
 {paraInput}
-                                        <label>選擇器模板，若不需要則自行移除</label>
-                                        <select class=""form-control"" name=""fieldName"">
-                                            <option>A</option>
-                                            <option>B</option>
-                                        </select>
-                                        <div class=""form-group"" style=""margin-top:25px;"">
-                                            @{{
-                                                string cBoxStyle = ""width:18px; height:18px; cursor:pointer; margin-top:3px;"";
-                                                string cBoxLabelStyle = ""margin-left:4px; font-size:14px; margin-top:3px;"";
-                                            }}    
-                                            <label>Inline Checkboxes測試</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label class=""checkbox-inline"">
-                                                <input type=""checkbox"" name=""cbox1"" style=""@cBoxStyle"" checked>
-                                                <label style=""@cBoxLabelStyle"">測試1</label>
-                                            </label>
-                                            <label class=""checkbox-inline"">
-                                                <input type=""checkbox"" name=""cbox2"" style=""@cBoxStyle"">
-                                                <label style=""@cBoxLabelStyle"">測試2</label>
-                                            </label>
-                                        </div>
-                                        <div class=""form-group"" style=""margin-top:25px;"">
-                                            @{{
-                                                string radioStyle = ""width:18px; height:18px; cursor:pointer; margin-top:3px;"";
-                                                string radioLabelStyle = ""margin-left:4px; font-size:14px; margin-top:3px;"";
-                                            }}
-                                            <label>Inline CheckRadio測試</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                            <label class=""radio-inline"">
-                                                <input type=""radio"" style=""@radioStyle"" name=""rbox"" value=""option1"" checked>
-                                                <label style=""@radioLabelStyle"">測試1</label>
-                                            </label>
-                                            <label class=""radio-inline"">
-                                                <input type=""radio"" style=""@radioStyle"" name=""rbox"" value=""option2"">
-                                                <label style=""@radioLabelStyle"">測試2</label>
-                                            </label>
-                                        </div>
+                                    <label>選擇器模板，若不需要則自行移除</label>
+                                    <select class=""form-control"" name=""fieldName"">
+                                        <option>A</option>
+                                        <option>B</option>
+                                    </select>
+                                    <div class=""form-group"" style=""margin-top:25px;"">
+                                        @{{
+                                            string cBoxStyle = ""width:18px; height:18px; cursor:pointer; margin-top:3px;"";
+                                            string cBoxLabelStyle = ""margin-left:4px; font-size:14px; margin-top:3px;"";
+                                        }}    
+                                        <label>Inline Checkboxes測試</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label class=""checkbox-inline"">
+                                            <input type=""checkbox"" name=""cbox1"" style=""@cBoxStyle"" checked>
+                                            <label style=""@cBoxLabelStyle"">測試1</label>
+                                        </label>
+                                        <label class=""checkbox-inline"">
+                                            <input type=""checkbox"" name=""cbox2"" style=""@cBoxStyle"">
+                                            <label style=""@cBoxLabelStyle"">測試2</label>
+                                        </label>
+                                    </div>
+                                    <div class=""form-group"" style=""margin-top:25px;"">
+                                        @{{
+                                            string radioStyle = ""width:18px; height:18px; cursor:pointer; margin-top:3px;"";
+                                            string radioLabelStyle = ""margin-left:4px; font-size:14px; margin-top:3px;"";
+                                        }}
+                                        <label>Inline CheckRadio測試</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <label class=""radio-inline"">
+                                            <input type=""radio"" style=""@radioStyle"" name=""rbox"" value=""option1"" checked>
+                                            <label style=""@radioLabelStyle"">測試1</label>
+                                        </label>
+                                        <label class=""radio-inline"">
+                                            <input type=""radio"" style=""@radioStyle"" name=""rbox"" value=""option2"">
+                                            <label style=""@radioLabelStyle"">測試2</label>
+                                        </label>
                                     </div>
                                     <input type=""hidden"" name=""id"" value=@Model.{idName} />
                                     <button type=""submit"" class=""btn btn-primary"">送出</button>

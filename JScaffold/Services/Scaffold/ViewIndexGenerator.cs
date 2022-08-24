@@ -18,7 +18,7 @@ namespace JScaffold.Services.Scaffold
 
                 paras.Add($"                                        <th style=\"white-space: nowrap;\">{item.Key}</th>");
             }
-            paras.Add($"                                        <th style=\"white-space: nowrap;\">操作選項</th>");
+            paras.Add($"                                        <th style=\"white-space: nowrap;\">operation</th>");
             string paraTitle = string.Join("\n", paras);
             #endregion
 
@@ -28,7 +28,15 @@ namespace JScaffold.Services.Scaffold
             {
                 if (item.Key.ToLower() == "id") continue;
 
-                paras.Add($"                                                    <td style=\"white-space: nowrap;\">@data.{item.Key}</td>");
+                // 優先處理常見的欄位
+                if(item.Key == "modify_date" || item.Key == "ModifyDate")
+                {
+                    paras.Add($"                                                <td style=\"\"white-space: nowrap;\"\">@Convert.ToDateTime(data.{item.Key}).ToString(\"yyyy-MM-dd HH:mm\")</td>");
+                }
+                else
+                {
+                    paras.Add($"                                                <td style=\"white-space: nowrap;\">@data.{item.Key}</td>");
+                }
             }
             string paraContent = string.Join("\n", paras);
             #endregion
@@ -112,7 +120,6 @@ namespace JScaffold.Services.Scaffold
                     <div class=""panel-heading"">
                         <button class=""btn btn-primary"" onclick=""location.href='@Url.Action(""Create"",""{controllerName}"")'"">新增</button>
                     </div>
-                    <!-- /.panel-heading -->
                     <div class=""panel-body"">
                         <div class=""table-responsive"">
                             <table class=""table table-striped table-bordered table-hover"" id=""dataTables-example"">

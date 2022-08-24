@@ -19,7 +19,7 @@ namespace JScaffold
         static void Main()
         {
             Console.WriteLine(@"輸入參數: 專案名稱, context名稱, 類別對應的表名, 類別路徑");
-            Console.WriteLine(@"輸入範例: MVCTest, DBContext, LoginLogs, D:\Desktop\Project\ProjectTest\MVCTest\Models\Entities\LoginLog.cs");
+            Console.WriteLine(@"輸入範例: MVCTest, DBContext, UserPermissions, D:\Desktop\Project\ProjectTest\MVCTest\Models\Entities\UserPermission.cs");
             Console.Write("> ");
             string input = Console.ReadLine();
             string[] names = input.Split(',');

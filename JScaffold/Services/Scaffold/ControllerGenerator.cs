@@ -76,6 +76,7 @@ namespace JScaffold.Services.Scaffold
 
             return $@"using {projectName}.Models.Entities;
 using {projectName}.Models;
+using {projectName}.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -84,7 +85,7 @@ using Microsoft.Extensions.Logging;
 
 namespace {projectName}.Controllers
 {{
-    //[AuthorizeManager]
+    [AuthorizeManager]
     public class {controllerName}Controller : Controller
     {{
         private readonly {contextName} _context;
@@ -141,7 +142,8 @@ namespace {projectName}.Controllers
         {{
             Result result = new Result
             {{
-                Code = 0
+                Code = 0,
+                Message = ""fail""
             }};
 
             try
@@ -151,11 +153,13 @@ namespace {projectName}.Controllers
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""刪除成功"";
                 result.Code = 1;
+                result.Message = ""success"";
                 return result;
             }}
             catch (Exception ex)
             {{
                 _logger.LogError($""刪除 {controllerName} 失敗 -> {{ex}}"");
+                result.Message = ex.ToString();
             }}
             return result;
         }}
