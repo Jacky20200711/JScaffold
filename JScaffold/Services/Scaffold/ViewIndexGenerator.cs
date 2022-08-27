@@ -51,8 +51,7 @@ namespace JScaffold.Services.Scaffold
         return textArea.value;
     }}
     var serverMessage = decodeEntities('@TempData[""message""]');
-    if (serverMessage.length > 0)
-    {{
+    if (serverMessage.length > 0){{
         Swal.fire({{
             title: serverMessage,
             showCancelButton: false,
