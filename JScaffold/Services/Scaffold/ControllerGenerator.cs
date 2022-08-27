@@ -138,7 +138,7 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<Result> Delete(int id)
+        public async Task<Result> Delete(int {idName})
         {{
             Result result = new Result
             {{
@@ -148,7 +148,7 @@ namespace {projectName}.Controllers
 
             try
             {{
-                {controllerName} data = new {controllerName}() {{ {idName} = id }};
+                {controllerName} data = new {controllerName}() {{ {idName} = {idName} }};
                 _context.Entry(data).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""刪除成功"";
@@ -164,16 +164,16 @@ namespace {projectName}.Controllers
             return result;
         }}
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? {idName})
         {{
             try
             {{
-                if (id == null)
+                if ({idName} == null)
                 {{
                     return NotFound();
                 }}
 
-                var data = await _context.{tableName}.FindAsync(id);
+                var data = await _context.{tableName}.FindAsync({idName});
 
                 if(data == null)
                 {{
