@@ -81,7 +81,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace {projectName}.Controllers
 {{
@@ -89,12 +89,10 @@ namespace {projectName}.Controllers
     public class {controllerName}Controller : Controller
     {{
         private readonly {contextName} _context;
-        private readonly ILogger<{controllerName}> _logger;
 
-        public {controllerName}Controller({contextName} context, ILogger<{controllerName}> logger)
+        public {controllerName}Controller({contextName} context)
         {{
             _context = context;
-            _logger = logger;
         }}
 
         public async Task<IActionResult> Index()
@@ -106,7 +104,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""撈取 {controllerName} 失敗 -> {{ex}}"");
+                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
                 TempData[""message""] = ""操作失敗"";
                 return RedirectToRoute(new {{ controller = ""Home"", action = ""Index"" }});
             }}
@@ -130,7 +128,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""新增 {controllerName} 失敗 -> {{ex}}"");
+                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
                 TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");
@@ -143,7 +141,6 @@ namespace {projectName}.Controllers
             Result result = new Result
             {{
                 Code = 0,
-                Message = ""fail""
             }};
 
             try
@@ -153,13 +150,11 @@ namespace {projectName}.Controllers
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""刪除成功"";
                 result.Code = 1;
-                result.Message = ""success"";
                 return result;
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""刪除 {controllerName} 失敗 -> {{ex}}"");
-                result.Message = ex.ToString();
+                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
             }}
             return result;
         }}
@@ -184,7 +179,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""準備修改 {controllerName} 時發生錯誤 -> {{ex}}"");
+                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
                 TempData[""message""] = ""操作失敗"";
                 return RedirectToAction(""Index"");
             }}
@@ -209,7 +204,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                _logger.LogError($""修改 {controllerName} 失敗 -> {{ex}}"");
+                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
                 TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");
