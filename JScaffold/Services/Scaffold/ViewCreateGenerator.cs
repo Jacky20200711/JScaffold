@@ -14,6 +14,14 @@ namespace JScaffold.Services.Scaffold
                 if (item.Key.ToLower() == "id") continue;
                 if(item.Key == "modify_user" || item.Key == "ModifyUser") continue;
                 if (item.Key == "modify_date" || item.Key == "ModifyDate") continue;
+                if (item.Key.ToLower().StartsWith("remark"))
+                {
+                    paras.Add($"                                    <div class=\"form-group\">");
+                    paras.Add($"                                        <label>{item.Key}</label>");
+                    paras.Add($"                                        <textarea class=\"form-control\" name=\"{item.Key}\" rows=\"4\" maxlength=\"200\">@Model.{item.Key}</textarea>");
+                    paras.Add($"                                    </div>");
+                    continue;
+                }
 
                 paras.Add($"                                    <div class=\"form-group\">");
                 paras.Add($"                                        <label>{item.Key}</label>");

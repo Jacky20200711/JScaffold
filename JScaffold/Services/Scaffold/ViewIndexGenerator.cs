@@ -31,7 +31,7 @@ namespace JScaffold.Services.Scaffold
                 // 優先處理常見的欄位
                 if(item.Key == "modify_date" || item.Key == "ModifyDate")
                 {
-                    paras.Add($"                                                <td style=\"\"white-space: nowrap;\"\">@Convert.ToDateTime(data.{item.Key}).ToString(\"yyyy-MM-dd HH:mm\")</td>");
+                    paras.Add($"                                                <td style=\"white-space: nowrap;\">@Convert.ToDateTime(data.{item.Key}).ToString(\"yyyy-MM-dd HH:mm\")</td>");
                 }
                 else
                 {
@@ -50,10 +50,11 @@ namespace JScaffold.Services.Scaffold
         textArea.innerHTML = encodedString;
         return textArea.value;
     }}
-    var serverMessage = decodeEntities('@TempData[""message""]');
-    if (serverMessage.length > 0){{
+    // 檢查是否有來自 Server 的訊息
+    var serverMsg = decodeEntities('@TempData[""message""]');
+    if (serverMsg.length > 0){{
         Swal.fire({{
-            title: serverMessage,
+            title: serverMsg,
             showCancelButton: false,
             customClass: {{
                 title: 'swal-title-font-size',
