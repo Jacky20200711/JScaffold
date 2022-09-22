@@ -88,7 +88,6 @@ namespace JScaffold.Services.Scaffold
                                         </label>
                                     </div>
                                     <button type=""submit"" class=""btn btn-primary"">送出</button>
-                                    <button type=""reset"" class=""btn btn-success"">重設</button>
                                     <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
                                 </form>
                             </div>
