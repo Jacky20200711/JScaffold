@@ -18,7 +18,7 @@ namespace JScaffold.Services.Scaffold
                 {
                     paras.Add($"                                    <div class=\"form-group\">");
                     paras.Add($"                                        <label>{item.Key}</label>");
-                    paras.Add($"                                        <textarea class=\"form-control\" name=\"{item.Key}\" rows=\"4\" maxlength=\"200\">@Model.{item.Key}</textarea>");
+                    paras.Add($"                                        <textarea class=\"form-control\" name=\"{item.Key}\" rows=\"4\" maxlength=\"200\"></textarea>");
                     paras.Add($"                                    </div>");
                     continue;
                 }
