@@ -57,8 +57,20 @@ namespace JScaffold.Services.Scaffold
 {paraInput}
                                     <label>選擇器模板，若不需要則自行移除</label>
                                     <select class=""form-control"" name=""fieldName"">
-                                        <option>A</option>
-                                        <option>B</option>
+                                        @{{
+                                            List<string> values = new List<string> {{ ""蘋果"", ""柳丁"", ""西瓜"" }};
+                                            foreach (var v in values)
+                                            {{
+                                                if (v == ""Your data"")
+                                                {{
+                                                    <option selected>v</option>
+                                                }}
+                                                else
+                                                {{
+                                                    <option>v</option>
+                                                }}
+                                            }}
+                                        }}
                                     </select>
                                     <div class=""form-group"" style=""margin-top:25px;"">
                                         @{{

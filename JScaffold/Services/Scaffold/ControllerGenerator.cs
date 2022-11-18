@@ -105,7 +105,7 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
-                TempData[""message""] = ""操作失敗"";
+                TempData[""message""] = ""Error"";
                 return RedirectToRoute(new {{ controller = ""Home"", action = ""Index"" }});
             }}
         }}
@@ -129,7 +129,7 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
-                TempData[""message""] = ""操作失敗"";
+                TempData[""message""] = ""Error"";
             }}
             return RedirectToAction(""Index"");
         }}
@@ -180,7 +180,7 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
-                TempData[""message""] = ""操作失敗"";
+                TempData[""message""] = ""Error"";
                 return RedirectToAction(""Index"");
             }}
         }}
@@ -205,7 +205,7 @@ namespace {projectName}.Controllers
             catch (Exception ex)
             {{
                 LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
-                TempData[""message""] = ""操作失敗"";
+                TempData[""message""] = ""Error"";
             }}
             return RedirectToAction(""Index"");
         }}
