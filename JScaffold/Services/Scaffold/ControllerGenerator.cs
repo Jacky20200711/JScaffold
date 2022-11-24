@@ -104,7 +104,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
+                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
                 TempData[""message""] = ""Error"";
                 return RedirectToRoute(new {{ controller = ""Home"", action = ""Index"" }});
             }}
@@ -128,7 +128,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
+                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
                 TempData[""message""] = ""Error"";
             }}
             return RedirectToAction(""Index"");
@@ -154,7 +154,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
+                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
             }}
             return result;
         }}
@@ -179,7 +179,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
+                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
                 TempData[""message""] = ""Error"";
                 return RedirectToAction(""Index"");
             }}
@@ -204,7 +204,7 @@ namespace {projectName}.Controllers
             }}
             catch (Exception ex)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error(ex.ToString());
+                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
                 TempData[""message""] = ""Error"";
             }}
             return RedirectToAction(""Index"");
