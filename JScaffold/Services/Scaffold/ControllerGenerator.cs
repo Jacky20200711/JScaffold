@@ -25,7 +25,7 @@ namespace JScaffold.Services.Scaffold
                 // 若是常見的特定欄位則額外處理
                 if (item.Key == "modify_user" || item.Key == "ModifyUser")
                 {
-                    paras.Add($"                data.{item.Key} = Utility.GetLoginName(HttpContext);");
+                    paras.Add($"                data.{item.Key} = utility.GetLoginAccount(HttpContext);");
                 }
                 else if (item.Key == "modify_date" || item.Key == "ModifyDate")
                 {
@@ -47,7 +47,7 @@ namespace JScaffold.Services.Scaffold
                 // 若是常見的特定欄位則優先處理
                 if (item.Key == "modify_user" || item.Key == "ModifyUser")
                 {
-                    paras.Add($"                data.{item.Key} = Utility.GetLoginName(HttpContext);");
+                    paras.Add($"                data.{item.Key} = utility.GetLoginAccount(HttpContext);");
                 }
                 else if (item.Key == "modify_date" || item.Key == "ModifyDate")
                 {
@@ -90,6 +90,7 @@ namespace {projectName}.Controllers
     public class {controllerName}Controller : Controller
     {{
         private readonly {contextName} _context;
+        private readonly Utility utility = new Utility();
 
         public {controllerName}Controller({contextName} context)
         {{
