@@ -4,9 +4,10 @@ namespace JScaffold.Services.Scaffold
 {
     public class ControllerGenerator
     {
-        public string GenerateCode(string projectName, string controllerName, string contextName, string tableName, Dictionary<string, string> variables)
+        public string GenerateCode(string projectName, string className, string contextName, string tableName, Dictionary<string, string> variables, string controllerName)
         {
             List<string> paras = new List<string>();
+
             string idName = "id";
             if (variables.ContainsKey("ID")) idName = "ID";
             if (variables.ContainsKey("Id")) idName = "Id";
@@ -117,7 +118,7 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create({controllerName} data)
+        public async Task<IActionResult> Create({className} data)
         {{
             try
             {{
@@ -145,12 +146,11 @@ namespace {projectName}.Controllers
 
             try
             {{
-                {controllerName} data = new {controllerName}() {{ {idName} = {idName} }};
+                {className} data = new {className}() {{ {idName} = {idName} }};
                 _context.Entry(data).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""刪除成功"";
                 result.Code = 1;
-                return result;
             }}
             catch (Exception ex)
             {{
@@ -187,7 +187,7 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit({controllerName} data)
+        public async Task<IActionResult> Edit({className} data)
         {{
             try
             {{

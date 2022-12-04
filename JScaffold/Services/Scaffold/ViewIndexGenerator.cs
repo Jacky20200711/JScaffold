@@ -4,7 +4,7 @@ namespace JScaffold.Services.Scaffold
 {
     public class ViewIndexGenerator
     {
-        public string GenerateCode(string controllerName, Dictionary<string, string> variables, string projecName)
+        public string GenerateCode(string className, Dictionary<string, string> variables, string projecName, string controllerName)
         {
             List<string> paras = new List<string>();
             string idName = "id";
@@ -41,7 +41,7 @@ namespace JScaffold.Services.Scaffold
             string paraContent = string.Join("\n", paras);
             #endregion
 
-            return $@"@model List<{projecName}.Models.Entities.{controllerName}>
+            return $@"@model List<{projecName}.Models.Entities.{className}>
 
 <script>
     // 這個函數用來將 Entity Code 轉回原文
@@ -92,7 +92,7 @@ namespace JScaffold.Services.Scaffold
                     else
                     {{
                         Swal.fire({{
-                            title: ""操作失敗"",
+                            title: ""Error"",
                             showCancelButton: false,
                             customClass: {{
                                 title: 'swal-title-font-size',

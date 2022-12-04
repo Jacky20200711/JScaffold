@@ -4,7 +4,7 @@ namespace JScaffold.Services.Scaffold
 {
     public class ViewEditGenerator
     {
-        public string GenerateCode(string controllerName, Dictionary<string, string> variables, string projecName)
+        public string GenerateCode(string className, Dictionary<string, string> variables, string projecName, string controllerName)
         {
             List<string> paras = new List<string>();
             string idName = "id";
@@ -35,7 +35,7 @@ namespace JScaffold.Services.Scaffold
             string paraInput = string.Join("\n", paras);
             #endregion
 
-            return $@"@model {projecName}.Models.Entities.{controllerName}
+            return $@"@model {projecName}.Models.Entities.{className}
 
 <div id=""page-wrapper"">
     <div class=""container-fluid"">
