@@ -59,15 +59,16 @@ namespace JScaffold.Services.Scaffold
                                     <select class=""form-control"" name=""fieldName"">
                                         @{{
                                             List<string> values = new List<string> {{ ""蘋果"", ""柳丁"", ""西瓜"" }};
-                                            foreach (var v in values)
+                                            List<string> valMap = new List<string> {{ ""Apple"", ""Orange"", ""Watermelon"" }};
+                                            for (int i = 0; i < values.Count; i++)
                                             {{
-                                                if (v == ""Your data"")
+                                                if (values[i] == ""Model.YourField"")
                                                 {{
-                                                    <option selected>v</option>
+                                                    <option selected>@valMap[i]</option>
                                                 }}
                                                 else
                                                 {{
-                                                    <option>v</option>
+                                                    <option>@valMap[i]</option>
                                                 }}
                                             }}
                                         }}
