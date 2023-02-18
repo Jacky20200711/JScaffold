@@ -14,9 +14,13 @@ namespace JScaffold.Services.Scaffold
             #region 設定欄位內容
             foreach (var item in variables)
             {
+                // 忽略不會顯示的欄位
                 if (item.Key.ToLower() == "id") continue;
+                if (item.Key == "create_user" || item.Key == "CreateUser") continue;
                 if (item.Key == "modify_user" || item.Key == "ModifyUser") continue;
+                if (item.Key == "create_date" || item.Key == "CreateDate") continue;
                 if (item.Key == "modify_date" || item.Key == "ModifyDate") continue;
+
                 if (item.Key.ToLower().StartsWith("remark"))
                 {
                     paras.Add($"                                    <div class=\"form-group\">");
@@ -103,9 +107,9 @@ namespace JScaffold.Services.Scaffold
                                             <label style=""@radioLabelStyle"">測試2</label>
                                         </label>
                                     </div>
-                                    <input type=""hidden"" name=""id"" value=@Model.{idName} />
+                                    <input type=""hidden"" name=""{idName}"" value=@Model.{idName} />
                                     <button type=""submit"" class=""btn btn-primary"">送出</button>
-                                    <a class=""btn btn-warning"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
+                                    <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
                                 </form>
                             </div>
                         </div>

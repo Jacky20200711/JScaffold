@@ -18,7 +18,7 @@ namespace JScaffold.Services.Scaffold
 
                 paras.Add($"                                        <th style=\"white-space: nowrap;\">{item.Key}</th>");
             }
-            paras.Add($"                                        <th style=\"white-space: nowrap;\">operation</th>");
+            paras.Add($"                                        <th style=\"white-space: nowrap;\">Operation</th>");
             string paraTitle = string.Join("\n", paras);
             #endregion
 
@@ -30,6 +30,10 @@ namespace JScaffold.Services.Scaffold
 
                 // 優先處理常見的欄位
                 if(item.Key == "modify_date" || item.Key == "ModifyDate")
+                {
+                    paras.Add($"                                                <td style=\"white-space: nowrap;\">@Convert.ToDateTime(data.{item.Key}).ToString(\"yyyy-MM-dd HH:mm\")</td>");
+                }
+                else if (item.Key == "create_date" || item.Key == "CreateDate")
                 {
                     paras.Add($"                                                <td style=\"white-space: nowrap;\">@Convert.ToDateTime(data.{item.Key}).ToString(\"yyyy-MM-dd HH:mm\")</td>");
                 }

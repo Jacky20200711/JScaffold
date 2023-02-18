@@ -16,18 +16,19 @@ namespace JScaffold.Services.Scaffold
             paras.Clear();
             foreach (var item in variables)
             {
-                // 排除 Primary key
-                if (item.Key.ToLower() == "id")
-                {
-                    continue;
-                }
+                // 忽略在新增時不會去異動的欄位
+                if (item.Key.ToLower() == "id") continue;
+                if (item.Key == "modify_user") continue;
+                if (item.Key == "modify_date") continue;
+                if (item.Key == "ModifyUser") continue;
+                if (item.Key == "ModifyDate") continue;
 
                 // 若是常見的特定欄位則額外處理
-                if (item.Key == "modify_user" || item.Key == "ModifyUser")
+                if (item.Key == "create_user" || item.Key == "CreateUser")
                 {
                     paras.Add($"                data.{item.Key} = utility.GetLoginAccount(HttpContext);");
                 }
-                else if (item.Key == "modify_date" || item.Key == "ModifyDate")
+                else if (item.Key == "create_date" || item.Key == "CreateDate")
                 {
                     paras.Add($"                data.{item.Key} = DateTime.Now;");
                 }
@@ -44,6 +45,13 @@ namespace JScaffold.Services.Scaffold
             paras.Clear();
             foreach (var item in variables)
             {
+                // 忽略在修改時不會去異動的欄位
+                if (item.Key.ToLower() == "id") continue;
+                if (item.Key == "create_user") continue;
+                if (item.Key == "create_date") continue;
+                if (item.Key == "CreateUser") continue;
+                if (item.Key == "CreateDate") continue;
+
                 // 若是常見的特定欄位則優先處理
                 if (item.Key == "modify_user" || item.Key == "ModifyUser")
                 {
@@ -64,11 +72,12 @@ namespace JScaffold.Services.Scaffold
 
             foreach (var item in variables)
             {
-                // 排除 Primary key
-                if (item.Key.ToLower() == "id")
-                {
-                    continue;
-                }
+                // 忽略在修改時不會去異動的欄位
+                if (item.Key.ToLower() == "id") continue;
+                if (item.Key == "create_user") continue;
+                if (item.Key == "create_date") continue;
+                if (item.Key == "CreateUser") continue;
+                if (item.Key == "CreateDate") continue;
 
                 paras.Add($"                _context.Entry(data).Property(p => p.{item.Key}).IsModified = true;");
             }
@@ -86,7 +95,7 @@ using NLog;
 
 namespace {projectName}.Controllers
 {{
-    [AuthorizeManager]
+    [LoginCheck]
     public class {controllerName}Controller : Controller
     {{
         private readonly {contextName} _context;
