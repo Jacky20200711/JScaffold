@@ -26,7 +26,7 @@ namespace JScaffold.Services.Scaffold
                 // 若是常見的特定欄位則額外處理
                 if (item.Key == "create_user" || item.Key == "CreateUser")
                 {
-                    paras.Add($"                data.{item.Key} = utility.GetLoginAccount(HttpContext);");
+                    paras.Add($"                data.{item.Key} = _utility.GetLoginAccount(HttpContext);");
                 }
                 else if (item.Key == "create_date" || item.Key == "CreateDate")
                 {
@@ -55,7 +55,7 @@ namespace JScaffold.Services.Scaffold
                 // 若是常見的特定欄位則優先處理
                 if (item.Key == "modify_user" || item.Key == "ModifyUser")
                 {
-                    paras.Add($"                data.{item.Key} = utility.GetLoginAccount(HttpContext);");
+                    paras.Add($"                data.{item.Key} = _utility.GetLoginAccount(HttpContext);");
                 }
                 else if (item.Key == "modify_date" || item.Key == "ModifyDate")
                 {
@@ -86,6 +86,7 @@ namespace JScaffold.Services.Scaffold
 
             return $@"using {projectName}.Models.Entities;
 using {projectName}.Models;
+using {projectName}.Models.ActionFilter;
 using {projectName}.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -95,15 +96,16 @@ using NLog;
 
 namespace {projectName}.Controllers
 {{
-    [LoginCheck]
+    [TypeFilter(typeof(LoginValidationFilter))]
     public class {controllerName}Controller : Controller
     {{
         private readonly {contextName} _context;
-        private readonly Utility utility = new Utility();
+        private readonly Utility _utility;
 
-        public {controllerName}Controller({contextName} context)
+        public {controllerName}Controller({contextName} context, Utility utility)
         {{
             _context = context;
+            _utility = utility;
         }}
 
         public async Task<IActionResult> Index()
