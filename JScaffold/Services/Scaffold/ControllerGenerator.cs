@@ -156,9 +156,9 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<Result> Delete(int {idName})
+        public async Task<ApiReturn> Delete(int {idName})
         {{
-            Result result = new Result {{ Code = 0 }};
+            ApiReturn apiReturn = new ApiReturn {{ Code = 0 }};
 
             try
             {{
@@ -166,12 +166,12 @@ namespace {projectName}.Controllers
                 _context.Entry(data).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""刪除成功"";
-                result.Code = 1;
+                apiReturn.Code = 1;
             }}
             catch (Exception)
             {{
             }}
-            return result;
+            return apiReturn;
         }}
 
         public async Task<IActionResult> Edit(int? {idName})
