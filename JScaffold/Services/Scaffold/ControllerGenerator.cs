@@ -4,11 +4,11 @@ namespace JScaffold.Services.Scaffold
 {
     public class ControllerGenerator
     {
-        public string GenerateCode(string projectName, string className, string contextName, string tableName, Dictionary<string, string> variables, string controllerName)
+        public string GenerateCode(string projectName, string className, string contextName, string tableName, Dictionary<string, string> variables, string controllerName, string primaryKeyName)
         {
             List<string> paras = new List<string>();
 
-            string idName = "id";
+            string idName = primaryKeyName;
             if (variables.ContainsKey("ID")) idName = "ID";
             if (variables.ContainsKey("Id")) idName = "Id";
 
@@ -17,7 +17,7 @@ namespace JScaffold.Services.Scaffold
             foreach (var item in variables)
             {
                 // 忽略在新增時不會去異動的欄位
-                if (item.Key.ToLower() == "id") continue;
+                if (item.Key == primaryKeyName) continue;
                 if (item.Key == "modify_user") continue;
                 if (item.Key == "modify_date") continue;
                 if (item.Key == "ModifyUser") continue;
@@ -26,7 +26,7 @@ namespace JScaffold.Services.Scaffold
                 // 若是常見的特定欄位則額外處理
                 if (item.Key == "create_user" || item.Key == "CreateUser")
                 {
-                    paras.Add($"                data.{item.Key} = _utility.GetLoginAccount(HttpContext);");
+                    paras.Add($"                data.{item.Key} = _utility.GetLoginAccount();");
                 }
                 else if (item.Key == "create_date" || item.Key == "CreateDate")
                 {
@@ -37,6 +37,16 @@ namespace JScaffold.Services.Scaffold
                 {
                     paras.Add($"                data.{item.Key} = data.{item.Key}?.Trim();");
                 }
+                // 若是一般的字串則去除首尾空白
+                else if (item.Value == "string?")
+                {
+                    paras.Add($"                data.{item.Key} = data.{item.Key}?.Trim();");
+                }
+                // 若是日期則一律給 DateTime.Now
+                else if (item.Value == "DateTime?" || item.Value == "DateTime")
+                {
+                    paras.Add($"                data.{item.Key} = DateTime.Now;");
+                }
             }
             string paraAssign_create = string.Join("\n", paras);
             #endregion
@@ -46,7 +56,7 @@ namespace JScaffold.Services.Scaffold
             foreach (var item in variables)
             {
                 // 忽略在修改時不會去異動的欄位
-                if (item.Key.ToLower() == "id") continue;
+                if (item.Key == primaryKeyName) continue;
                 if (item.Key == "create_user") continue;
                 if (item.Key == "create_date") continue;
                 if (item.Key == "CreateUser") continue;
@@ -73,7 +83,7 @@ namespace JScaffold.Services.Scaffold
             foreach (var item in variables)
             {
                 // 忽略在修改時不會去異動的欄位
-                if (item.Key.ToLower() == "id") continue;
+                if (item.Key == primaryKeyName) continue;
                 if (item.Key == "create_user") continue;
                 if (item.Key == "create_date") continue;
                 if (item.Key == "CreateUser") continue;
@@ -92,7 +102,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
-using NLog;
 
 namespace {projectName}.Controllers
 {{
@@ -115,10 +124,9 @@ namespace {projectName}.Controllers
                 var data = await _context.{tableName}.ToListAsync();
                 return View(data);
             }}
-            catch (Exception ex)
+            catch (Exception)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
-                TempData[""message""] = ""Error"";
+                TempData[""message""] = ""操作失敗"";
                 return RedirectToRoute(new {{ controller = ""Home"", action = ""Index"" }});
             }}
         }}
@@ -139,10 +147,9 @@ namespace {projectName}.Controllers
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""新增成功"";
             }}
-            catch (Exception ex)
+            catch (Exception)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
-                TempData[""message""] = ""Error"";
+                TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");
         }}
@@ -151,10 +158,7 @@ namespace {projectName}.Controllers
         [ValidateAntiForgeryToken]
         public async Task<Result> Delete(int {idName})
         {{
-            Result result = new Result
-            {{
-                Code = 0,
-            }};
+            Result result = new Result {{ Code = 0 }};
 
             try
             {{
@@ -164,9 +168,8 @@ namespace {projectName}.Controllers
                 TempData[""message""] = ""刪除成功"";
                 result.Code = 1;
             }}
-            catch (Exception ex)
+            catch (Exception)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
             }}
             return result;
         }}
@@ -189,10 +192,9 @@ namespace {projectName}.Controllers
 
                 return View(data);
             }}
-            catch (Exception ex)
+            catch (Exception)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
-                TempData[""message""] = ""Error"";
+                TempData[""message""] = ""操作失敗"";
                 return RedirectToAction(""Index"");
             }}
         }}
@@ -214,10 +216,9 @@ namespace {projectName}.Controllers
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""修改成功"";
             }}
-            catch (Exception ex)
+            catch (Exception)
             {{
-                LogManager.GetLogger(""{controllerName}"").Error($""{{ex.Message}}\n{{ex.StackTrace}}"");
-                TempData[""message""] = ""Error"";
+                TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");
         }}

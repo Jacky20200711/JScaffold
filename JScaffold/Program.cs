@@ -20,6 +20,8 @@ namespace JScaffold
         {
             Console.WriteLine(@"輸入參數: 專案名稱, context名稱, 類別對應的表名, 類別路徑, controller名稱(非必填)");
             Console.WriteLine(@"輸入範例: MVCTest, DBContext, Users, D:\Desktop\Project\ProjectTest\MVCTest\Models\Entities\User.cs");
+            Console.WriteLine(@"輸入範例: GeoAdmin2023, DBContext, LawNo0Uploads, D:\Desktop\Project\ProjectTest\TemplateToNet7\GeoAdmin2023\Models\Entities\LawNo0Upload.cs");
+            Console.WriteLine(@"輸入範例: GeoAdmin2023, GeoContext, LawNo0Uploads, C:\Projects\GeoAdmin2023\Models\Entities\LawNo0Upload.cs");
             Console.Write("> ");
             string input = Console.ReadLine();
             string[] names = input.Split(',');
@@ -36,6 +38,13 @@ namespace JScaffold
             string tableName = names[2].Trim();
             string classPath = names[3].Replace('\\', '/').Trim();
             string controllerName = names.Length == 5 ? names[4].Trim() : "";
+
+            Console.Write(@"Name of Primary Key : ");
+            string primaryKeyName = Console.ReadLine().Trim();
+            if(primaryKeyName.Length == 0)
+            {
+                primaryKeyName = "id";
+            }
 
             // 檢查類別路徑
             if (!File.Exists(classPath))
@@ -61,14 +70,15 @@ namespace JScaffold
             ViewIndexGenerator viewIndexGenerator = new ViewIndexGenerator();
             ViewCreateGenerator viewCreateGenerator = new ViewCreateGenerator();
             ViewEditGenerator viewEditGenerator = new ViewEditGenerator();
-            string text1 = controllerGenerator.GenerateCode(projecName, className, contextName, tableName, variables, controllerName);
+            string text1 = controllerGenerator.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
             string text2 = viewIndexGenerator.GenerateCode(className, variables, projecName, controllerName);
             string text3 = viewCreateGenerator.GenerateCode(controllerName, variables);
             string text4 = viewEditGenerator.GenerateCode(className, variables, projecName, controllerName);
 
             // 設定輸出目錄
-            string outputDir1 = $"D:/Desktop";
+            string outputDir1 = Directory.Exists("D:") ? "D:/Desktop" : "C:/Users/ycgis/Desktop";
             string outputDir2 = $"{outputDir1}/{controllerName}";
+
             if (!Directory.Exists(outputDir1))
             {
                 Directory.CreateDirectory(outputDir1);
