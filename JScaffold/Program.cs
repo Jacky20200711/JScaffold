@@ -70,9 +70,9 @@ namespace JScaffold
             ViewCreateGenerator viewCreateGenerator = new ViewCreateGenerator();
             ViewEditGenerator viewEditGenerator = new ViewEditGenerator();
             string text1 = controllerGenerator.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
-            string text2 = viewIndexGenerator.GenerateCode(className, variables, projecName, controllerName);
-            string text3 = viewCreateGenerator.GenerateCode(controllerName, variables);
-            string text4 = viewEditGenerator.GenerateCode(className, variables, projecName, controllerName);
+            string text2 = viewIndexGenerator.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
+            string text3 = viewCreateGenerator.GenerateCode(controllerName, variables, primaryKeyName);
+            string text4 = viewEditGenerator.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
 
             // 設定輸出目錄
             string outputDir1 = Directory.Exists("D:") ? "D:/Desktop" : "C:/Users/ycgis/Desktop";

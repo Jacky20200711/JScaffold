@@ -4,10 +4,12 @@ namespace JScaffold.Services.Scaffold
 {
     public class ViewEditGenerator
     {
-        public string GenerateCode(string className, Dictionary<string, string> variables, string projecName, string controllerName)
+        public string GenerateCode(string className, Dictionary<string, string> variables, string projecName, string controllerName, string primaryKeyName)
         {
             List<string> paras = new List<string>();
-            string idName = "id";
+
+            // 設定 PK 名稱
+            string idName = primaryKeyName;
             if (variables.ContainsKey("ID")) idName = "ID";
             if (variables.ContainsKey("Id")) idName = "Id";
 
@@ -15,7 +17,7 @@ namespace JScaffold.Services.Scaffold
             foreach (var item in variables)
             {
                 // 忽略不會顯示的欄位
-                if (item.Key.ToLower() == "id") continue;
+                if (item.Key.ToLower() == idName.ToLower()) continue;
                 if (item.Key == "create_user" || item.Key == "CreateUser") continue;
                 if (item.Key == "modify_user" || item.Key == "ModifyUser") continue;
                 if (item.Key == "create_date" || item.Key == "CreateDate") continue;

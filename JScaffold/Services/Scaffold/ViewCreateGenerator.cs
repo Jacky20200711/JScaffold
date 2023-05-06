@@ -4,15 +4,20 @@ namespace JScaffold.Services.Scaffold
 {
     public class ViewCreateGenerator
     {
-        public string GenerateCode(string controllerName, Dictionary<string, string> variables)
+        public string GenerateCode(string controllerName, Dictionary<string, string> variables, string primaryKeyName)
         {
             List<string> paras = new List<string>();
+
+            // 設定 PK 名稱
+            string idName = primaryKeyName;
+            if (variables.ContainsKey("ID")) idName = "ID";
+            if (variables.ContainsKey("Id")) idName = "Id";
 
             #region 設定欄位內容
             foreach (var item in variables)
             {
                 // 忽略不會顯示的欄位
-                if (item.Key.ToLower() == "id") continue;
+                if (item.Key.ToLower() == idName.ToLower()) continue;
                 if (item.Key == "modify_user" || item.Key == "ModifyUser") continue;
                 if (item.Key == "create_user" || item.Key == "CreateUser") continue;
                 if (item.Key == "modify_date" || item.Key == "ModifyDate") continue;

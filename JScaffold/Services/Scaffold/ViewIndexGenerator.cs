@@ -4,10 +4,12 @@ namespace JScaffold.Services.Scaffold
 {
     public class ViewIndexGenerator
     {
-        public string GenerateCode(string className, Dictionary<string, string> variables, string projecName, string controllerName)
+        public string GenerateCode(string className, Dictionary<string, string> variables, string projecName, string controllerName, string primaryKeyName)
         {
             List<string> paras = new List<string>();
-            string idName = "id";
+
+            // 設定 PK 名稱
+            string idName = primaryKeyName;
             if (variables.ContainsKey("ID")) idName = "ID";
             if (variables.ContainsKey("Id")) idName = "Id";
 
@@ -87,7 +89,7 @@ namespace JScaffold.Services.Scaffold
                     }},
                     type: 'POST',
                     url: '@Url.Action(""Delete"", ""{controllerName}"")',
-                    data: {{ id: idOfData }}
+                    data: {{ {idName}: idOfData }}
                 }})
                 .done(function (result) {{
                     if (result[""code""] == 1) {{
@@ -143,7 +145,7 @@ namespace JScaffold.Services.Scaffold
                                                 <td style=""display:none;"">@sequence</td>
 {paraContent}   
                                                 <td style=""white-space: nowrap;"">
-                                                    <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ id = data.{idName} }})'"">修改</button>
+                                                    <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"", ""{controllerName}"", new {{ {idName} = data.{idName} }})'"">修改</button>
                                                     <button class=""btn btn-danger"" onclick=""DeleteData(@data.{idName})"">刪除</button>
                                                 </td>
                                             </tr>

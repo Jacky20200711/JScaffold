@@ -8,6 +8,7 @@ namespace JScaffold.Services.Scaffold
         {
             List<string> paras = new List<string>();
 
+            // 設定 PK 名稱
             string idName = primaryKeyName;
             if (variables.ContainsKey("ID")) idName = "ID";
             if (variables.ContainsKey("Id")) idName = "Id";
