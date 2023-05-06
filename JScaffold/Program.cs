@@ -20,8 +20,7 @@ namespace JScaffold
         {
             Console.WriteLine(@"輸入參數: 專案名稱, context名稱, 類別對應的表名, 類別路徑, controller名稱(非必填)");
             Console.WriteLine(@"輸入範例: MVCTest, DBContext, Users, D:\Desktop\Project\ProjectTest\MVCTest\Models\Entities\User.cs");
-            Console.WriteLine(@"輸入範例: GeoAdmin2023, DBContext, LawNo0Uploads, D:\Desktop\Project\ProjectTest\TemplateToNet7\GeoAdmin2023\Models\Entities\LawNo0Upload.cs");
-            Console.WriteLine(@"輸入範例: GeoAdmin2023, GeoContext, LawNo0Uploads, C:\Projects\GeoAdmin2023\Models\Entities\LawNo0Upload.cs");
+            Console.WriteLine(@"輸入範例: MVCTestAdmin, DBContext, LawNo0Uploads, D:\Desktop\Project\ProjectTest\TemplateToNet7\GeoAdmin2023\Models\Entities\LawNo0Upload.cs");
             Console.Write("> ");
             string input = Console.ReadLine();
             string[] names = input.Split(',');
