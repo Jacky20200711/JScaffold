@@ -97,12 +97,11 @@ namespace JScaffold.Services.Scaffold
 
             return $@"using {projectName}.Models.Entities;
 using {projectName}.Models;
-using {projectName}.Models.ActionFilter;
+using {projectName}.Models.ActionFilters;
 using {projectName}.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Threading.Tasks;
+using NLog;
 
 namespace {projectName}.Controllers
 {{
@@ -125,8 +124,9 @@ namespace {projectName}.Controllers
                 var data = await _context.{tableName}.ToListAsync();
                 return View(data);
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
+                LogManager.GetLogger(""{controllerName}"").Error($""搜尋失敗，{{ex}}"");
                 TempData[""message""] = ""操作失敗"";
                 return RedirectToRoute(new {{ controller = ""Home"", action = ""Index"" }});
             }}
@@ -148,8 +148,9 @@ namespace {projectName}.Controllers
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""新增成功"";
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
+                LogManager.GetLogger(""{controllerName}"").Error($""新增失敗，{{ex}}"");
                 TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");
@@ -169,8 +170,9 @@ namespace {projectName}.Controllers
                 TempData[""message""] = ""刪除成功"";
                 apiReturn.Code = 1;
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
+                LogManager.GetLogger(""{controllerName}"").Error($""刪除失敗，{{ex}}"");
             }}
             return apiReturn;
         }}
@@ -193,8 +195,9 @@ namespace {projectName}.Controllers
 
                 return View(data);
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
+                LogManager.GetLogger(""{controllerName}"").Error($""點選修改出錯，{{ex}}"");
                 TempData[""message""] = ""操作失敗"";
                 return RedirectToAction(""Index"");
             }}
@@ -217,8 +220,9 @@ namespace {projectName}.Controllers
                 await _context.SaveChangesAsync();
                 TempData[""message""] = ""修改成功"";
             }}
-            catch (Exception)
+            catch (Exception ex)
             {{
+                LogManager.GetLogger(""{controllerName}"").Error($""送出修改失敗，{{ex}}"");
                 TempData[""message""] = ""操作失敗"";
             }}
             return RedirectToAction(""Index"");
