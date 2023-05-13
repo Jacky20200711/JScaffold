@@ -27,7 +27,7 @@ namespace JScaffold.Services.Scaffold
                 // 若是常見的特定欄位則額外處理
                 if (item.Key == "create_user" || item.Key == "CreateUser")
                 {
-                    paras.Add($"                data.{item.Key} = _utility.GetLoginAccount();");
+                    paras.Add($"                data.{item.Key} = _loginService.GetUserName();");
                 }
                 else if (item.Key == "create_date" || item.Key == "CreateDate")
                 {
@@ -66,7 +66,7 @@ namespace JScaffold.Services.Scaffold
                 // 若是常見的特定欄位則優先處理
                 if (item.Key == "modify_user" || item.Key == "ModifyUser")
                 {
-                    paras.Add($"                data.{item.Key} = _utility.GetLoginAccount(HttpContext);");
+                    paras.Add($"                data.{item.Key} = _loginService.GetUserName();");
                 }
                 else if (item.Key == "modify_date" || item.Key == "ModifyDate")
                 {
@@ -102,6 +102,8 @@ using {projectName}.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using System.Threading.Tasks;
+using System;
 
 namespace {projectName}.Controllers
 {{
@@ -109,12 +111,12 @@ namespace {projectName}.Controllers
     public class {controllerName}Controller : Controller
     {{
         private readonly {contextName} _context;
-        private readonly Utility _utility;
+        private readonly LoginService _loginService;
 
-        public {controllerName}Controller({contextName} context, Utility utility)
+        public {controllerName}Controller({contextName} context, LoginService loginService)
         {{
             _context = context;
-            _utility = utility;
+            _loginService = loginService;
         }}
 
         public async Task<IActionResult> Index()
@@ -153,6 +155,7 @@ namespace {projectName}.Controllers
                 LogManager.GetLogger(""{controllerName}"").Error($""新增失敗，{{ex}}"");
                 TempData[""message""] = ""操作失敗"";
             }}
+
             return RedirectToAction(""Index"");
         }}
 
