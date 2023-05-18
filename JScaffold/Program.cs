@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using JScaffold.Services.Scaffold.Core31;
 
 namespace JScaffold
 {

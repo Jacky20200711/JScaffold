@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace JScaffold.Services.Scaffold
+namespace JScaffold.Services.Scaffold.Core31
 {
     public class ViewIndexGenerator
     {
