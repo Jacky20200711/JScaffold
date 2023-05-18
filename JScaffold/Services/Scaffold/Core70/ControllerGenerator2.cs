@@ -113,13 +113,29 @@ namespace {projectName}.Controllers
             _loginService = loginService;
         }}
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNum = 1)
         {{
             try
             {{
-                TempData[""pageNum""] = 1;
-                TempData[""pageMax""] = 1;
+                // 撈取資料
                 var data = await _context.{tableName}.ToListAsync();
+
+                // 確保頁數 >= 1 & 定義每個分頁的資料數量
+                if (pageNum < 1) pageNum = 1;
+                int dataNumOfEachPage = 10;
+
+                // 根據撈取的資料數量，來計算最大頁數，並限制分頁數量最多為9999
+                int dataAmount = data.Count;
+                int pageMax = (dataAmount % dataNumOfEachPage == 0) ? (dataAmount / dataNumOfEachPage) : (dataAmount / dataNumOfEachPage) + 1;
+                pageMax = pageMax > 9999 ? 9999 : pageMax;
+
+                // 設置前端分頁按鈕群會用到的參數
+                if (pageNum > pageMax) pageNum = pageMax;
+                TempData[""pageNum""] = pageNum;
+                TempData[""pageMax""] = pageMax;
+
+                // 擷取分頁所需的資料
+                data = data.Skip((pageNum - 1) * dataNumOfEachPage).Take(dataNumOfEachPage).ToList();
                 return View(data);
             }}
             catch (Exception ex)
