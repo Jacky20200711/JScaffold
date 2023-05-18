@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace JScaffold.Services.Scaffold
+namespace JScaffold.Services.Scaffold.Core70
 {
-    public class ControllerGenerator
+    public class ControllerGenerator2
     {
         public string GenerateCode(string projectName, string className, string contextName, string tableName, Dictionary<string, string> variables, string controllerName, string primaryKeyName)
         {
             List<string> paras = new List<string>();
 
             // 設定 PK 名稱
-            string idName = primaryKeyName;
-            if (variables.ContainsKey("ID")) idName = "ID";
-            if (variables.ContainsKey("Id")) idName = "Id";
+            if (variables.ContainsKey("ID")) primaryKeyName = "ID";
+            if (variables.ContainsKey("Id")) primaryKeyName = "Id";
 
             #region 設定新增資料的欄位
             paras.Clear();
@@ -123,6 +122,8 @@ namespace {projectName}.Controllers
         {{
             try
             {{
+                TempData[""pageNum""] = 1;
+                TempData[""pageMax""] = 1;
                 var data = await _context.{tableName}.ToListAsync();
                 return View(data);
             }}
@@ -161,16 +162,16 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ApiReturn> Delete(int {idName})
+        public async Task<ApiReturn> Delete(int {primaryKeyName})
         {{
             ApiReturn apiReturn = new ApiReturn {{ Code = 0 }};
 
             try
             {{
-                {className} data = new {className}() {{ {idName} = {idName} }};
+                {className} data = new {className}() {{ {primaryKeyName} = {primaryKeyName} }};
                 _context.Entry(data).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
-                TempData[""message""] = ""刪除成功"";
+                //TempData[""message""] = ""刪除成功"";
                 apiReturn.Code = 1;
             }}
             catch (Exception ex)
@@ -180,16 +181,16 @@ namespace {projectName}.Controllers
             return apiReturn;
         }}
 
-        public async Task<IActionResult> Edit(int? {idName})
+        public async Task<IActionResult> Edit(int? {primaryKeyName})
         {{
             try
             {{
-                if ({idName} == null)
+                if ({primaryKeyName} == null)
                 {{
                     return NotFound();
                 }}
 
-                var data = await _context.{tableName}.FindAsync({idName});
+                var data = await _context.{tableName}.FindAsync({primaryKeyName});
 
                 if(data == null)
                 {{

@@ -1,10 +1,10 @@
-﻿using JScaffold.Services.Scaffold;
-using JScaffold.Services;
+﻿using JScaffold.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using JScaffold.Services.Scaffold.Core31;
+using JScaffold.Services.Scaffold.Core70;
 
 namespace JScaffold
 {
@@ -22,7 +22,7 @@ namespace JScaffold
             Console.WriteLine(@"輸入參數: 專案名稱, context名稱, 類別對應的表名, 類別路徑, controller名稱(非必填)");
             Console.WriteLine(@"輸入範例: MVCTest, DBContext, AdminUsers, D:\Desktop\Project\ProjectTest\MVCTest\Models\Entities\AdminUser.cs");
             Console.WriteLine(@"輸入範例: MVCTestAdmin, DBContext, AdminUsers, D:\Desktop\Project\ProjectTest\MVCTest\Models\Entities\AdminUser.cs");
-            Console.WriteLine(@"輸入範例: MVCTestAdmin, DBContext, PagePermissions, D:\Desktop\Project\ProjectTest\MVCTestAdmin\Models\Entities\PagePermission.cs");
+            Console.WriteLine(@"輸入範例: MVCTestAdmin, DBContext, CRUDTests, D:\Desktop\Project\ProjectTest\TemplateToNet7\MVCTestAdmin\Models\Entities\CRUDTest.cs");
             Console.Write("> ");
             string input = Console.ReadLine();
             string[] names = input.Split(',');
@@ -71,29 +71,55 @@ namespace JScaffold
             ViewIndexGenerator viewIndexGenerator = new ViewIndexGenerator();
             ViewCreateGenerator viewCreateGenerator = new ViewCreateGenerator();
             ViewEditGenerator viewEditGenerator = new ViewEditGenerator();
-            string text1 = controllerGenerator.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
-            string text2 = viewIndexGenerator.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
-            string text3 = viewCreateGenerator.GenerateCode(controllerName, variables, primaryKeyName);
-            string text4 = viewEditGenerator.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
+            string controllerCore31 = controllerGenerator.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
+            string viewIndexCore31 = viewIndexGenerator.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
+            string viewCreateCore31 = viewCreateGenerator.GenerateCode(controllerName, variables, primaryKeyName);
+            string viewEditCore31 = viewEditGenerator.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
+
+            ControllerGenerator2 controllerGenerator2 = new ControllerGenerator2();
+            ViewIndexGenerator2 viewIndexGenerator2 = new ViewIndexGenerator2();
+            ViewCreateGenerator2 viewCreateGenerator2 = new ViewCreateGenerator2();
+            ViewEditGenerator2 viewEditGenerator2 = new ViewEditGenerator2();
+            string controllerCore70 = controllerGenerator2.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
+            string viewIndexCore70 = viewIndexGenerator2.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
+            string viewCreateCore70 = viewCreateGenerator2.GenerateCode(controllerName, variables, primaryKeyName);
+            string viewEditCore70 = viewEditGenerator2.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
 
             // 設定輸出目錄
-            string outputDir1 = Directory.Exists("D:") ? "D:/Desktop" : "C:/Users/ycgis/Desktop";
-            string outputDir2 = $"{outputDir1}/{controllerName}";
+            string rootDir = Directory.Exists("D:") ? "D:/Desktop" : "C:/Users/ycgis/Desktop";
+            string core31OutputDir = $"{rootDir}/Core31";
+            string core70OutputDir = $"{rootDir}/Core70";
+            string core31SubDir1 = $"{rootDir}/Core31/Views/{controllerName}";
+            string core70SubDir1 = $"{rootDir}/Core70/Views/{controllerName}";
+            string core31SubDir2 = $"{rootDir}/Core31/Controllers";
+            string core70SubDir2 = $"{rootDir}/Core70/Controllers";
 
-            if (!Directory.Exists(outputDir1))
+            // 若輸出目錄不存在則創建
+            List<string> outputDirList = new List<string>
             {
-                Directory.CreateDirectory(outputDir1);
-            }
-            if (!Directory.Exists(outputDir2))
+                core31OutputDir, core70OutputDir,
+                core31SubDir1, core70SubDir1,
+                core31SubDir2, core70SubDir2
+            };
+
+            foreach(var dName in outputDirList)
             {
-                Directory.CreateDirectory(outputDir2);
+                if (!Directory.Exists(dName))
+                {
+                    Directory.CreateDirectory(dName);
+                }
             }
 
             // 寫入輸出目錄
-            WriteToFile($"{outputDir1}/{controllerName}Controller.cs", text1);
-            WriteToFile($"{outputDir2}/Index.cshtml", text2);
-            WriteToFile($"{outputDir2}/Create.cshtml", text3);
-            WriteToFile($"{outputDir2}/Edit.cshtml", text4);
+            WriteToFile($"{core31SubDir1}/Index.cshtml", viewIndexCore31);
+            WriteToFile($"{core31SubDir1}/Create.cshtml", viewCreateCore31);
+            WriteToFile($"{core31SubDir1}/Edit.cshtml", viewEditCore31);
+            WriteToFile($"{core31SubDir2}/{controllerName}Controller.cs", controllerCore31);
+
+            WriteToFile($"{core70SubDir1}/Index.cshtml", viewIndexCore70);
+            WriteToFile($"{core70SubDir1}/Create.cshtml", viewCreateCore70);
+            WriteToFile($"{core70SubDir1}/Edit.cshtml", viewEditCore70);
+            WriteToFile($"{core70SubDir2}/{controllerName}Controller.cs", controllerCore70);
         }
     }
 }
