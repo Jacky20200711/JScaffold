@@ -42,11 +42,6 @@ namespace JScaffold.Services.Scaffold.Core70
                 {
                     paras.Add($"                data.{item.Key} = data.{item.Key}?.Trim();");
                 }
-                // 若是日期則一律給 DateTime.Now
-                else if (item.Value == "DateTime?" || item.Value == "DateTime")
-                {
-                    paras.Add($"                data.{item.Key} = DateTime.Now;");
-                }
             }
             string paraAssign_create = string.Join("\n", paras);
             #endregion

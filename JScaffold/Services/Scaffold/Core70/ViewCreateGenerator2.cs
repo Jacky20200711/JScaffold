@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace JScaffold.Services.Scaffold.Core70
 {
@@ -31,9 +32,17 @@ namespace JScaffold.Services.Scaffold.Core70
                     continue;
                 }
 
+                // 判斷 input 的欄位類型
+                string inputType = "text";
+
+                if (item.Value.ToLower().Contains("datetime"))
+                {
+                    inputType = "date";
+                }
+
                 paras.Add($"        <tr>");
                 paras.Add($"            <td>{item.Key}</td>");
-                paras.Add($"            <td><input type=\"text\" name=\"{item.Key}\" maxlength=\"100\"></td>");
+                paras.Add($"            <td><input type=\"{inputType}\" name=\"{item.Key}\" maxlength=\"100\"></td>");
                 paras.Add($"        </tr>");
 
             }

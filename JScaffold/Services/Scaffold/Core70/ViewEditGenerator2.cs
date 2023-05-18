@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace JScaffold.Services.Scaffold.Core70
 {
@@ -31,16 +33,28 @@ namespace JScaffold.Services.Scaffold.Core70
                     continue;
                 }
 
+                // 判斷 input 的欄位類型
+                string inputType = "text";
+                string inputValue = $"@Model.{item.Key}";
+
+                if (item.Value.ToLower().Contains("datetime"))
+                {
+                    inputType = "date";
+                    inputValue = $"@(Convert.ToDateTime(Model.{item.Key}).ToString(\"yyyy-MM-dd\"))";
+                    
+                }
+
                 paras.Add($"        <tr>");
                 paras.Add($"            <td>{item.Key}</td>");
-                paras.Add($"            <td><input type=\"text\" name=\"{item.Key}\" value=\"@Model.{item.Key}\" maxlength=\"100\"></td>");
+                paras.Add($"            <td><input type=\"{inputType}\" name=\"{item.Key}\" value=\"{inputValue}\" maxlength=\"100\"></td>");
                 paras.Add($"        </tr>");
 
             }
             string paraInput = string.Join("\n", paras);
             #endregion
 
-            return $@"<link href=""~/css/myEdit.css"" rel=""stylesheet"" type=""text/css"">
+            return $@"@model {projecName}.Models.Entities.{className}
+<link href=""~/css/myEdit.css"" rel=""stylesheet"" type=""text/css"">
 <link href=""~/css/myBoxStyle.css"" rel=""stylesheet"" type=""text/css"">
 <form role=""form"" asp-controller=""{controllerName}"" asp-action=""Edit"" method=""post"">
     @Html.AntiForgeryToken()
@@ -77,7 +91,7 @@ namespace JScaffold.Services.Scaffold.Core70
         <input type=""hidden"" name=""{primaryKeyName}"" value=""@Model.{primaryKeyName}"" />
         <div style=""margin-top:10px; text-align:center;"">
             <button type=""submit"" class=""btn btn-primary"">送出</button>
-            <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{{controllerName}}"")"">返回列表</a>
+            <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
         </div>
 </form>
 ";
