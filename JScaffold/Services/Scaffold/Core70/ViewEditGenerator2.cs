@@ -40,8 +40,7 @@ namespace JScaffold.Services.Scaffold.Core70
                 if (item.Value.ToLower().Contains("datetime"))
                 {
                     inputType = "date";
-                    inputValue = $"@(Convert.ToDateTime(Model.{item.Key}).ToString(\"yyyy-MM-dd\"))";
-                    
+                    inputValue = $"@(Model.{item.Key} != null ? Convert.ToDateTime(Model.{item.Key}).ToString(\"yyyy-MM-dd\") : \"\")";
                 }
 
                 paras.Add($"        <tr>");
