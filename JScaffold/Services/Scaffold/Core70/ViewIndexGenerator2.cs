@@ -30,13 +30,9 @@ namespace JScaffold.Services.Scaffold.Core70
                 if (item.Key.ToLower() == "id") continue;
 
                 // 優先處理常見的欄位
-                if(item.Key == "modify_date" || item.Key == "ModifyDate")
+                if(item.Key == "modify_date" || item.Key == "ModifyDate" || item.Key == "create_date" || item.Key == "CreateDate")
                 {
-                    paras.Add($"                                    <td style=\"white-space: nowrap;\">@Convert.ToDateTime(data.{item.Key}).ToString(\"yyyy-MM-dd HH:mm\")</td>");
-                }
-                else if (item.Key == "create_date" || item.Key == "CreateDate")
-                {
-                    paras.Add($"                                    <td style=\"white-space: nowrap;\">@Convert.ToDateTime(data.{item.Key}).ToString(\"yyyy-MM-dd HH:mm\")</td>");
+                    paras.Add($"                                    <td style=\"white-space: nowrap;\">@(data.{item.Key} != null ? Convert.ToDateTime(data.{item.Key}).ToString(\"yyyy-MM-dd HH:mm\") : \"\")</td>");
                 }
                 else
                 {
