@@ -121,6 +121,11 @@ namespace JScaffold.Services.Scaffold.Core70
         Swal.fire({{
             title: ""確定要刪除?"",
             showCancelButton: true,
+            customClass: {{
+                title: 'swal-label-font-size',
+                confirmButton: 'swal-button-font-size',
+                cancelButton: 'swal-button-font-size',
+            }},
         }}).then(function(result) {{
             if (result.value) {{
                 $.ajax({{
@@ -139,8 +144,12 @@ namespace JScaffold.Services.Scaffold.Core70
                     else
                     {{
                         Swal.fire({{
-                            title: ""Error"",
-                            showCancelButton: false,
+                            title: '操作失敗',
+                            customClass: {{
+                                title: 'swal-label-font-size',
+                                confirmButton: 'swal-button-font-size',
+                                cancelButton: 'swal-button-font-size',
+                            }}
                         }});
                     }}
                 }});
