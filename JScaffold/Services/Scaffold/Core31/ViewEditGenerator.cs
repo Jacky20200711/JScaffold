@@ -9,118 +9,88 @@ namespace JScaffold.Services.Scaffold.Core31
             List<string> paras = new List<string>();
 
             // 設定 PK 名稱
-            string idName = primaryKeyName;
-            if (variables.ContainsKey("ID")) idName = "ID";
-            if (variables.ContainsKey("Id")) idName = "Id";
+            if (variables.ContainsKey("ID")) primaryKeyName = "ID";
+            if (variables.ContainsKey("Id")) primaryKeyName = "Id";
 
             #region 設定欄位內容
             foreach (var item in variables)
             {
                 // 忽略不會顯示的欄位
-                if (item.Key.ToLower() == idName.ToLower()) continue;
-                if (item.Key == "create_user" || item.Key == "CreateUser") continue;
+                if (item.Key.ToLower() == primaryKeyName.ToLower()) continue;
                 if (item.Key == "modify_user" || item.Key == "ModifyUser") continue;
-                if (item.Key == "create_date" || item.Key == "CreateDate") continue;
+                if (item.Key == "create_user" || item.Key == "CreateUser") continue;
                 if (item.Key == "modify_date" || item.Key == "ModifyDate") continue;
+                if (item.Key == "create_date" || item.Key == "CreateDate") continue;
 
                 if (item.Key.ToLower().StartsWith("remark"))
                 {
-                    paras.Add($"                                    <div class=\"form-group\">");
-                    paras.Add($"                                        <label>{item.Key}</label>");
-                    paras.Add($"                                        <textarea class=\"form-control\" name=\"{item.Key}\" rows=\"4\" maxlength=\"200\">@Model.{item.Key}</textarea>");
-                    paras.Add($"                                    </div>");
+                    paras.Add($"        <tr>");
+                    paras.Add($"            <td>{item.Key}</td>");
+                    paras.Add($"            <td><textarea name=\"{item.Key}\" rows=\"4\" maxlength=\"200\" style=\"width:100%\"></textarea></td>");
+                    paras.Add($"        </tr>");
                     continue;
                 }
 
-                paras.Add($"                                    <div class=\"form-group\">");
-                paras.Add($"                                        <label>{item.Key}</label>");
-                paras.Add($"                                        <input class=\"form-control\" name=\"{item.Key}\" maxlength=\"100\" value=\"@Model.{item.Key}\">");
-                paras.Add($"                                    </div>");
+                // 判斷 input 的欄位類型
+                string inputType = "text";
+                string inputValue = $"@Model.{item.Key}";
+
+                if (item.Value.ToLower().Contains("datetime"))
+                {
+                    inputType = "date";
+                    inputValue = $"@(Model.{item.Key} != null ? Convert.ToDateTime(Model.{item.Key}).ToString(\"yyyy-MM-dd\") : \"\")";
+                }
+
+                paras.Add($"        <tr>");
+                paras.Add($"            <td>{item.Key}</td>");
+                paras.Add($"            <td><input type=\"{inputType}\" name=\"{item.Key}\" value=\"{inputValue}\" maxlength=\"100\"></td>");
+                paras.Add($"        </tr>");
 
             }
             string paraInput = string.Join("\n", paras);
             #endregion
 
             return $@"@model {projecName}.Models.Entities.{className}
-
-<div id=""page-wrapper"">
-    <div class=""container-fluid"">
-        <div class=""row"">
-            <div class=""col-lg-12"">
-                <h1 class=""page-header"">修改資料</h1>
-            </div>
-        </div>
-        <div class=""row"">
-            <div class=""col-lg-12"">
-                <div class=""panel panel-default"">
-                    <div class=""panel-heading"">
-                        修改完畢後，點選下方的送出按鈕
-                    </div>
-                    <div class=""panel-body"">
-                        <div class=""row"">
-                            <div class=""col-lg-6"">
-                                <form role=""form"" asp-controller=""{controllerName}"" asp-action=""Edit"">
+<link href=""~/css/myEdit.css"" rel=""stylesheet"" type=""text/css"">
+<link href=""~/css/myBoxStyle.css"" rel=""stylesheet"" type=""text/css"">
+<form role=""form"" asp-controller=""{controllerName}"" asp-action=""Edit"" method=""post"">
+    @Html.AntiForgeryToken()
+    <table>
 {paraInput}
-                                    <label>選擇器模板，若不需要則自行移除</label>
-                                    <select class=""form-control"" name=""fieldName"">
-                                        @{{
-                                            List<string> values = new List<string> {{ ""蘋果"", ""柳丁"", ""西瓜"" }};
-                                            List<string> valMap = new List<string> {{ ""Apple"", ""Orange"", ""Watermelon"" }};
-                                            for (int i = 0; i < values.Count; i++)
-                                            {{
-                                                if (values[i] == ""Model.YourField"")
-                                                {{
-                                                    <option selected>@valMap[i]</option>
-                                                }}
-                                                else
-                                                {{
-                                                    <option>@valMap[i]</option>
-                                                }}
-                                            }}
-                                        }}
-                                    </select>
-                                    <div class=""form-group"" style=""margin-top:25px;"">
-                                        @{{
-                                            string cBoxStyle = ""width:18px; height:18px; cursor:pointer; margin-top:3px;"";
-                                            string cBoxLabelStyle = ""margin-left:4px; font-size:14px; margin-top:3px;"";
-                                        }}    
-                                        <label>Inline Checkboxes測試</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <label class=""checkbox-inline"">
-                                            <input type=""checkbox"" name=""cbox1"" style=""@cBoxStyle"" checked>
-                                            <label style=""@cBoxLabelStyle"">測試1</label>
-                                        </label>
-                                        <label class=""checkbox-inline"">
-                                            <input type=""checkbox"" name=""cbox2"" style=""@cBoxStyle"">
-                                            <label style=""@cBoxLabelStyle"">測試2</label>
-                                        </label>
-                                    </div>
-                                    <div class=""form-group"" style=""margin-top:25px;"">
-                                        @{{
-                                            string radioStyle = ""width:18px; height:18px; cursor:pointer; margin-top:3px;"";
-                                            string radioLabelStyle = ""margin-left:4px; font-size:14px; margin-top:3px;"";
-                                        }}
-                                        <label>Inline CheckRadio測試</label>&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <label class=""radio-inline"">
-                                            <input type=""radio"" style=""@radioStyle"" name=""rbox"" value=""option1"" checked>
-                                            <label style=""@radioLabelStyle"">測試1</label>
-                                        </label>
-                                        <label class=""radio-inline"">
-                                            <input type=""radio"" style=""@radioStyle"" name=""rbox"" value=""option2"">
-                                            <label style=""@radioLabelStyle"">測試2</label>
-                                        </label>
-                                    </div>
-                                    <input type=""hidden"" name=""{idName}"" value=@Model.{idName} />
-                                    <button type=""submit"" class=""btn btn-primary"">送出</button>
-                                    <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <tr>
+            <td>多選模板</td>
+            <td><input type=""checkbox"" />&nbsp;加蛋 <input type=""checkbox"" style=""margin-left:10px;"" />&nbsp;加肉</td>
+        </tr>
+        <tr>
+            <td>單選模板</td>
+            <td><input type=""radio"" name=""radio1"" />&nbsp;是 <input type=""radio"" name=""radio1"" style=""margin-left:24px;"" />&nbsp;否</td>
+        </tr>
+        <tr>
+            <td>日期模板</td>
+            <td><input type=""date"" /></td>
+        </tr>
+        <tr>
+            <td>下拉模板</td>
+            <td>
+                <select>
+                    <option>請選擇</option>
+                    <option>提交中</option>
+                    <option>請補正</option>
+                    <option>已審核</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>上傳模板</td>
+            <td><input type=""file"" id=""file1"" /></td>
+        </tr>
+        </table>
+        <input type=""hidden"" name=""{primaryKeyName}"" value=""@Model.{primaryKeyName}"" />
+        <div style=""margin-top:10px; text-align:center;"">
+            <button type=""submit"" class=""btn btn-primary"">送出</button>
+            <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
         </div>
-    </div>
-</div>
+</form>
 ";
         }
     }

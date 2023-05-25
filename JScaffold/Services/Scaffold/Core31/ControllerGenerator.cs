@@ -9,9 +9,8 @@ namespace JScaffold.Services.Scaffold.Core31
             List<string> paras = new List<string>();
 
             // 設定 PK 名稱
-            string idName = primaryKeyName;
-            if (variables.ContainsKey("ID")) idName = "ID";
-            if (variables.ContainsKey("Id")) idName = "Id";
+            if (variables.ContainsKey("ID")) primaryKeyName = "ID";
+            if (variables.ContainsKey("Id")) primaryKeyName = "Id";
 
             #region 設定新增資料的欄位
             paras.Clear();
@@ -19,17 +18,13 @@ namespace JScaffold.Services.Scaffold.Core31
             {
                 // 忽略在新增時不會去異動的欄位
                 if (item.Key == primaryKeyName) continue;
-                if (item.Key == "modify_user") continue;
-                if (item.Key == "modify_date") continue;
-                if (item.Key == "ModifyUser") continue;
-                if (item.Key == "ModifyDate") continue;
 
                 // 若是常見的特定欄位則額外處理
-                if (item.Key == "create_user" || item.Key == "CreateUser")
+                if (item.Key == "create_user" || item.Key == "CreateUser" || item.Key == "ModifyUser" || item.Key == "modify_user")
                 {
                     paras.Add($"                data.{item.Key} = _loginService.GetUserName();");
                 }
-                else if (item.Key == "create_date" || item.Key == "CreateDate")
+                else if (item.Key == "create_date" || item.Key == "CreateDate" || item.Key == "modify_date" || item.Key == "ModifyDate")
                 {
                     paras.Add($"                data.{item.Key} = DateTime.Now;");
                 }
@@ -42,11 +37,6 @@ namespace JScaffold.Services.Scaffold.Core31
                 else if (item.Value == "string?")
                 {
                     paras.Add($"                data.{item.Key} = data.{item.Key}?.Trim();");
-                }
-                // 若是日期則一律給 DateTime.Now
-                else if (item.Value == "DateTime?" || item.Value == "DateTime")
-                {
-                    paras.Add($"                data.{item.Key} = DateTime.Now;");
                 }
             }
             string paraAssign_create = string.Join("\n", paras);
@@ -104,6 +94,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace {projectName}.Controllers
 {{
@@ -119,11 +110,29 @@ namespace {projectName}.Controllers
             _loginService = loginService;
         }}
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNum = 1)
         {{
             try
             {{
+                // 撈取資料
                 var data = await _context.{tableName}.ToListAsync();
+
+                // 確保頁數 >= 1 & 定義每個分頁的資料數量
+                if (pageNum < 1) pageNum = 1;
+                int dataNumOfEachPage = 10;
+
+                // 根據撈取的資料數量，來計算最大頁數，並限制分頁數量最多為9999
+                int dataAmount = data.Count;
+                int pageMax = (dataAmount % dataNumOfEachPage == 0) ? (dataAmount / dataNumOfEachPage) : (dataAmount / dataNumOfEachPage) + 1;
+                pageMax = pageMax > 9999 ? 9999 : pageMax;
+
+                // 設置前端分頁按鈕群會用到的參數
+                if (pageNum > pageMax) pageNum = pageMax;
+                TempData[""pageNum""] = pageNum;
+                TempData[""pageMax""] = pageMax;
+
+                // 擷取分頁所需的資料
+                data = data.Skip((pageNum - 1) * dataNumOfEachPage).Take(dataNumOfEachPage).ToList();
                 return View(data);
             }}
             catch (Exception ex)
@@ -161,16 +170,16 @@ namespace {projectName}.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ApiReturn> Delete(int {idName})
+        public async Task<ApiReturn> Delete(int {primaryKeyName})
         {{
             ApiReturn apiReturn = new ApiReturn {{ Code = 0 }};
 
             try
             {{
-                {className} data = new {className}() {{ {idName} = {idName} }};
+                {className} data = new {className}() {{ {primaryKeyName} = {primaryKeyName} }};
                 _context.Entry(data).State = EntityState.Deleted;
                 await _context.SaveChangesAsync();
-                TempData[""message""] = ""刪除成功"";
+                //TempData[""message""] = ""刪除成功"";
                 apiReturn.Code = 1;
             }}
             catch (Exception ex)
@@ -180,16 +189,16 @@ namespace {projectName}.Controllers
             return apiReturn;
         }}
 
-        public async Task<IActionResult> Edit(int? {idName})
+        public async Task<IActionResult> Edit(int? {primaryKeyName})
         {{
             try
             {{
-                if ({idName} == null)
+                if ({primaryKeyName} == null)
                 {{
                     return NotFound();
                 }}
 
-                var data = await _context.{tableName}.FindAsync({idName});
+                var data = await _context.{tableName}.FindAsync({primaryKeyName});
 
                 if(data == null)
                 {{

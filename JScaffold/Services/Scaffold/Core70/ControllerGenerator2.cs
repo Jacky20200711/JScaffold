@@ -18,17 +18,13 @@ namespace JScaffold.Services.Scaffold.Core70
             {
                 // 忽略在新增時不會去異動的欄位
                 if (item.Key == primaryKeyName) continue;
-                if (item.Key == "modify_user") continue;
-                if (item.Key == "modify_date") continue;
-                if (item.Key == "ModifyUser") continue;
-                if (item.Key == "ModifyDate") continue;
 
                 // 若是常見的特定欄位則額外處理
-                if (item.Key == "create_user" || item.Key == "CreateUser")
+                if (item.Key == "create_user" || item.Key == "CreateUser" || item.Key == "ModifyUser" || item.Key == "modify_user")
                 {
                     paras.Add($"                data.{item.Key} = _loginService.GetUserName();");
                 }
-                else if (item.Key == "create_date" || item.Key == "CreateDate")
+                else if (item.Key == "create_date" || item.Key == "CreateDate" || item.Key == "modify_date" || item.Key == "ModifyDate")
                 {
                     paras.Add($"                data.{item.Key} = DateTime.Now;");
                 }
