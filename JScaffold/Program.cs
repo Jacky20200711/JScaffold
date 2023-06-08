@@ -1,8 +1,8 @@
-﻿using JScaffold.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using JScaffold.Services;
 using JScaffold.Services.Scaffold.Core31;
 using JScaffold.Services.Scaffold.Core70;
 
@@ -55,8 +55,9 @@ namespace JScaffold
             // 通過路徑檢查後，取出類別名稱
             string className = classPath.Split('/')[^1].Replace(".cs", "");
 
-            // 解析該類別內部的各項變數(名稱與類型)
-            Dictionary<string, string> variables = ClassParser.GetVariable(classPath);
+            // 解析該類別內部的變數名稱與類型
+            ClassParseService classParseService = new ClassParseService();
+            Dictionary<string, string> variables = classParseService.Parse(classPath);
 
             // 若沒有指定 controllerName 則將 className 指派給他
             if (string.IsNullOrEmpty(controllerName))

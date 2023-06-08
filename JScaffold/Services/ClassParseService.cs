@@ -3,7 +3,7 @@ using System.IO;
 
 namespace JScaffold.Services
 {
-    public static class ClassParser
+    public class ClassParseService
     {
         public static HashSet<string> dType = new HashSet<string>
         {
@@ -15,7 +15,7 @@ namespace JScaffold.Services
         /// 分析類別檔案，取出變數類型與名稱
         /// </summary>
         /// <returns>所有變數的名稱與類型(Key=變數名稱，Val=變數類型)</returns>
-        public static Dictionary<string, string> GetVariable(string fileName)
+        public Dictionary<string, string> Parse(string fileName)
         {
             Dictionary<string, string> variables = new Dictionary<string, string>();
             HashSet<string> dType = new HashSet<string>
