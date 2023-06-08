@@ -84,7 +84,7 @@ namespace JScaffold.Services
 {paraContent}
                                     <td style=""white-space: nowrap;"">
                                         <button class=""btn btn-success"" onclick=""location.href='@Url.Action(""Edit"",""{controllerName}"", new {{ {primaryKeyName} = data.{primaryKeyName} }})'"">修改</button>
-                                        <button class=""btn btn-danger"" onclick=""DeleteData(@data.{primaryKeyName})"">刪除</button>
+                                        <button class=""btn btn-danger"" onclick=""deleteData(@data.{primaryKeyName},'@Url.Action(""Delete"", ""{controllerName}"")')"">刪除</button>
                                     </td>
                                 </tr>
                             }}    
@@ -116,47 +116,7 @@ namespace JScaffold.Services
         </div>
     </div>
 </div>
-<script>
-    function DeleteData(idOfData) {{
-        Swal.fire({{
-            title: ""確定要刪除?"",
-            showCancelButton: true,
-            customClass: {{
-                title: 'swal-label-font-size',
-                confirmButton: 'swal-button-font-size',
-                cancelButton: 'swal-button-font-size',
-            }},
-        }}).then(function(result) {{
-            if (result.value) {{
-                $.ajax({{
-                    beforeSend: function (xhr) {{
-                        xhr.setRequestHeader(""requestverificationtoken"",
-                            $('input:hidden[name=""__RequestVerificationToken""]').val());
-                    }},
-                    type: 'POST',
-                    url: '@Url.Action(""Delete"", ""{controllerName}"")',
-                    data: {{ {primaryKeyName}: idOfData }}
-                }})
-                .done(function (result) {{
-                    if (result[""code""] == 1) {{
-                        self.location.reload();
-                    }}
-                    else
-                    {{
-                        Swal.fire({{
-                            title: '操作失敗',
-                            customClass: {{
-                                title: 'swal-label-font-size',
-                                confirmButton: 'swal-button-font-size',
-                                cancelButton: 'swal-button-font-size',
-                            }}
-                        }});
-                    }}
-                }});
-            }}
-        }});
-    }}
-</script>
+
 <script src=""~/js/myPagination.js""></script>
 <script>SetPaginationButton(@((int)TempData[""pageNum""]!), @((int)TempData[""pageMax""]!))</script>
 ";

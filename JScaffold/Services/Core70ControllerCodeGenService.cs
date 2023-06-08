@@ -31,7 +31,8 @@ namespace JScaffold.Services
                 // 若是一般的字串則去除首尾空白
                 else if (item.Value == "string")
                 {
-                    paras.Add($"                data.{item.Key} = data.{item.Key}?.Trim();");
+                    // 由於 Core 7.0 的 string 不可為 null，所以 Trim 之前不用添加問號
+                    paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
                 }
                 // 若是一般的字串則去除首尾空白
                 else if (item.Value == "string?")
@@ -54,7 +55,7 @@ namespace JScaffold.Services
                 if (item.Key == "CreateDate") continue;
 
                 // 若是常見的特定欄位則優先處理
-                if (item.Key == "modify_user" || item.Key == "ModifyUser")
+                if (item.Key == "ModifyUser" || item.Key == "modify_user")
                 {
                     paras.Add($"                data.{item.Key} = _loginService.GetUserName();");
                 }
@@ -62,7 +63,14 @@ namespace JScaffold.Services
                 {
                     paras.Add($"                data.{item.Key} = DateTime.Now;");
                 }
-                else if (item.Value.StartsWith("string"))
+                // 若是一般的字串則去除首尾空白
+                else if (item.Value == "string")
+                {
+                    // 由於 Core 7.0 的 string 不可為 null，所以 Trim 之前不用添加問號
+                    paras.Add($"                data.{item.Key} = data.{item.Key}.Trim();");
+                }
+                // 若是一般的字串則去除首尾空白
+                else if (item.Value == "string?")
                 {
                     paras.Add($"                data.{item.Key} = data.{item.Key}?.Trim();");
                 }
