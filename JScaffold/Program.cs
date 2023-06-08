@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using JScaffold.Services;
-using JScaffold.Services.Scaffold.Core31;
-using JScaffold.Services.Scaffold.Core70;
 
 namespace JScaffold
 {
@@ -65,24 +63,21 @@ namespace JScaffold
                 controllerName = className;
             }
 
-            // 產生程式碼
-            ControllerGenerator controllerGenerator = new ControllerGenerator();
-            ViewIndexGenerator viewIndexGenerator = new ViewIndexGenerator();
-            ViewCreateGenerator viewCreateGenerator = new ViewCreateGenerator();
-            ViewEditGenerator viewEditGenerator = new ViewEditGenerator();
-            string controllerCore31 = controllerGenerator.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
-            string viewIndexCore31 = viewIndexGenerator.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
-            string viewCreateCore31 = viewCreateGenerator.GenerateCode(controllerName, variables, primaryKeyName);
-            string viewEditCore31 = viewEditGenerator.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
+            // 創建程式碼產生服務
+            Core31ControllerCodeGenService core31ControllerCodeGenService = new Core31ControllerCodeGenService();
+            Core70ControllerCodeGenService core70ControllerCodeGenService = new Core70ControllerCodeGenService();
+            ViewIndexCodeGenService viewIndexCodeGenService = new ViewIndexCodeGenService();
+            ViewCreateCodeGenService viewCreateCodeGenService = new ViewCreateCodeGenService();
+            ViewEditCodeGenService viewEditCodeGenService = new ViewEditCodeGenService();
+            
+            // 產生 Controller 的程式碼(有 Core 3.1 與 Core 7.0 兩種版本)
+            string codeOfCore31Controller = core31ControllerCodeGenService.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
+            string codeOfCore70Controller = core70ControllerCodeGenService.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
 
-            ControllerGenerator2 controllerGenerator2 = new ControllerGenerator2();
-            ViewIndexGenerator2 viewIndexGenerator2 = new ViewIndexGenerator2();
-            ViewCreateGenerator2 viewCreateGenerator2 = new ViewCreateGenerator2();
-            ViewEditGenerator2 viewEditGenerator2 = new ViewEditGenerator2();
-            string controllerCore70 = controllerGenerator2.GenerateCode(projecName, className, contextName, tableName, variables, controllerName, primaryKeyName);
-            string viewIndexCore70 = viewIndexGenerator2.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
-            string viewCreateCore70 = viewCreateGenerator2.GenerateCode(controllerName, variables, primaryKeyName);
-            string viewEditCore70 = viewEditGenerator2.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
+            // 產生 View 的程式碼(這些程式碼與後端框架無關，只要產生一組即可)
+            string codeOfViewIndex = viewIndexCodeGenService.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
+            string codeOfViewCreate = viewCreateCodeGenService.GenerateCode(controllerName, variables, primaryKeyName);
+            string codeOfViewEdit = viewEditCodeGenService.GenerateCode(className, variables, projecName, controllerName, primaryKeyName);
 
             // 設定輸出目錄
             string rootDir = Directory.Exists("D:") ? "D:/Desktop" : "C:/Users/ycgis/Desktop";
@@ -109,16 +104,17 @@ namespace JScaffold
                 }
             }
 
-            // 寫入輸出目錄
-            WriteToFile($"{core31SubDir1}/Index.cshtml", viewIndexCore31);
-            WriteToFile($"{core31SubDir1}/Create.cshtml", viewCreateCore31);
-            WriteToFile($"{core31SubDir1}/Edit.cshtml", viewEditCore31);
-            WriteToFile($"{core31SubDir2}/{controllerName}Controller.cs", controllerCore31);
+            // 寫入 Core 3.1 的模板輸出路徑
+            WriteToFile($"{core31SubDir1}/Index.cshtml", codeOfViewIndex);
+            WriteToFile($"{core31SubDir1}/Create.cshtml", codeOfViewCreate);
+            WriteToFile($"{core31SubDir1}/Edit.cshtml", codeOfViewEdit);
+            WriteToFile($"{core31SubDir2}/{controllerName}Controller.cs", codeOfCore31Controller);
 
-            WriteToFile($"{core70SubDir1}/Index.cshtml", viewIndexCore70);
-            WriteToFile($"{core70SubDir1}/Create.cshtml", viewCreateCore70);
-            WriteToFile($"{core70SubDir1}/Edit.cshtml", viewEditCore70);
-            WriteToFile($"{core70SubDir2}/{controllerName}Controller.cs", controllerCore70);
+            // 寫入 Core 7.0 的模板輸出路徑
+            WriteToFile($"{core70SubDir1}/Index.cshtml", codeOfViewIndex);
+            WriteToFile($"{core70SubDir1}/Create.cshtml", codeOfViewCreate);
+            WriteToFile($"{core70SubDir1}/Edit.cshtml", codeOfViewEdit);
+            WriteToFile($"{core70SubDir2}/{controllerName}Controller.cs", codeOfCore70Controller);
         }
     }
 }

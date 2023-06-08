@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace JScaffold.Services.Scaffold.Core31
+namespace JScaffold.Services
 {
-    public class ViewCreateGenerator
+    public class ViewCreateCodeGenService
     {
         public string GenerateCode(string controllerName, Dictionary<string, string> variables, string primaryKeyName)
         {

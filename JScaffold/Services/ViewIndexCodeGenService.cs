@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace JScaffold.Services.Scaffold.Core31
+namespace JScaffold.Services
 {
-    public class ViewIndexGenerator
+    public class ViewIndexCodeGenService
     {
         public string GenerateCode(string className, Dictionary<string, string> variables, string projecName, string controllerName, string primaryKeyName)
         {

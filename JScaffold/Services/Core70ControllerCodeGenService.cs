@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace JScaffold.Services.Scaffold.Core70
+namespace JScaffold.Services
 {
-    public class ControllerGenerator2
+    public class Core70ControllerCodeGenService
     {
         public string GenerateCode(string projectName, string className, string contextName, string tableName, Dictionary<string, string> variables, string controllerName, string primaryKeyName)
         {

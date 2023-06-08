@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace JScaffold.Services.Scaffold.Core70
+namespace JScaffold.Services
 {
-    public class ViewEditGenerator2
+    public class ViewEditCodeGenService
     {
         public string GenerateCode(string className, Dictionary<string, string> variables, string projecName, string controllerName, string primaryKeyName)
         {
