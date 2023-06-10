@@ -82,11 +82,11 @@ namespace JScaffold.Services
             <td>上傳模板</td>
             <td><input type=""file"" id=""file1"" /></td>
         </tr>
-        </table>
-        <div style=""margin-top:10px; text-align:center;"">
-            <button type=""submit"" class=""btn btn-primary"">送出</button>
-            <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
-        </div>
+    </table>
+    <div style=""margin-top:10px; text-align:center;"">
+        <button type=""submit"" class=""btn btn-primary"">送出</button>
+        <a class=""btn btn-danger"" href=""@Url.Action(""Index"", ""{controllerName}"")"">返回列表</a>
+    </div>
 </form>
 ";
         }
