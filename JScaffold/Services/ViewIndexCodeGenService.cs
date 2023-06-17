@@ -54,18 +54,18 @@ namespace JScaffold.Services
                         <a class=""btn btn-primary"" href=""@Url.Action(""Create"",""{controllerName}"")"">新增資料</a>
                     </div>
                     <div style=""width:70%"">
-                        @*<form>
+                        <form>
                             <div style=""float:right;"">
                                 <input type=""hidden"" name=""searchType"" value=""blur"">
                                 <input type=""search"" id=""search"" name=""search"" style=""height:30px; position:relative; top:1px;"" maxlength=""50"" required />
                                 <button class=""btn btn-primary"" type=""submit"" style=""height:33px;"">
                                     <i class=""fa fa-search""></i>
                                 </button>
-                                <a class=""btn btn-primary"" href=""@Url.Action(""Index"", ""PagePermission"")"">
+                                <a class=""btn btn-primary"" href=""@Url.Action(""Index"", ""{controllerName}"")"">
                                     列出全部
                                 </a>
                             </div>
-                        </form>*@
+                        </form>
                     </div>
                 </div>
             </div>

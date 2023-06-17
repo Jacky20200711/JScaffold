@@ -110,7 +110,7 @@ namespace {projectName}.Controllers
             _loginService = loginService;
         }}
 
-        public async Task<IActionResult> Index(int pageNum = 1)
+        public async Task<IActionResult> Index(string search, int pageNum = 1)
         {{
             try
             {{
