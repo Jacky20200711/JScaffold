@@ -94,7 +94,7 @@ namespace JScaffold.Services
                         <div style=""width:75%; margin-left:15%;"">
                             @*最多需要顯示 14 個按鈕，例如 << < [1]~[10] > >> *@
                             <button class=""btn_prev"" id=""btn_prev_prev"" onclick=""GetPageData('btn_prev_prev', @((int)TempData[""pageNum""]!), @((int)TempData[""pageMax""]!))"">&lt;&lt;</button>
-                            <button class=""btn_prev"" style=""margin-right:4px;"" id=""btn_prev"" onclick=""GetPageData('btn_prev', @((int)TempData[""pageNum""]!), @((int)TempData[""pageMax""]!))"">&lt;</button>
+                            <button class=""btn_prev"" style=""margin-right:6px;"" id=""btn_prev"" onclick=""GetPageData('btn_prev', @((int)TempData[""pageNum""]!), @((int)TempData[""pageMax""]!))"">&lt;</button>
                             <button class=""btn_page"" style=""display:none;"" id=""btn_page_1"" onclick=""GetPageData('btn_page_1', @((int)TempData[""pageNum""]!), @((int)TempData[""pageMax""]!))""></button>
                             <button class=""btn_page"" style=""display:none;"" id=""btn_page_2"" onclick=""GetPageData('btn_page_2', @((int)TempData[""pageNum""]!), @((int)TempData[""pageMax""]!))""></button>
                             <button class=""btn_page"" style=""display:none;"" id=""btn_page_3"" onclick=""GetPageData('btn_page_3', @((int)TempData[""pageNum""]!), @((int)TempData[""pageMax""]!))""></button>
