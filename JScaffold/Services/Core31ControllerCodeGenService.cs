@@ -95,6 +95,7 @@ using NLog;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using MVCTestAdmin.Models.SearchParamModel;
 
 namespace {projectName}.Controllers
 {{
@@ -110,7 +111,7 @@ namespace {projectName}.Controllers
             _loginService = loginService;
         }}
 
-        public async Task<IActionResult> Index(string search, int pageNum = 1)
+        public async Task<IActionResult> Index(SearchParamBase searchParam)
         {{
             try
             {{
@@ -118,7 +119,7 @@ namespace {projectName}.Controllers
                 var data = await _context.{tableName}.ToListAsync();
 
                 // 確保頁數 >= 1 & 定義每個分頁的資料數量
-                if (pageNum < 1) pageNum = 1;
+                int pageNum = searchParam.PageNum < 1 ? 1 : searchParam.PageNum;
                 int dataNumOfEachPage = 10;
 
                 // 根據撈取的資料數量，來計算最大頁數，並限制分頁數量最多為9999

@@ -56,8 +56,7 @@ namespace JScaffold.Services
                     <div style=""width:70%"">
                         <form>
                             <div style=""float:right;"">
-                                <input type=""hidden"" name=""searchType"" value=""blur"">
-                                <input type=""search"" id=""search"" name=""search"" style=""height:30px; position:relative; top:1px;"" maxlength=""50"" required />
+                                <input type=""search"" id=""search"" name=""keyword"" style=""height:30px; position:relative; top:1px;"" maxlength=""50"" required />
                                 <button class=""btn btn-primary"" type=""submit"" style=""height:33px;"">
                                     <i class=""fa fa-search""></i>
                                 </button>
