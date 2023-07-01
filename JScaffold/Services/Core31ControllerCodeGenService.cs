@@ -87,7 +87,6 @@ namespace JScaffold.Services
 
             return $@"using {projectName}.Models.Entities;
 using {projectName}.Models;
-using {projectName}.Models.ActionFilters;
 using {projectName}.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -99,7 +98,6 @@ using MVCTestAdmin.Models.SearchParamModel;
 
 namespace {projectName}.Controllers
 {{
-    [TypeFilter(typeof(LoginValidationFilter))]
     public class {controllerName}Controller : Controller
     {{
         private readonly {contextName} _context;
